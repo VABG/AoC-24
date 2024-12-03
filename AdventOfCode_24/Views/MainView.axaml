@@ -1,0 +1,98 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:AdventOfCode_24.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="512"
+             x:Class="AdventOfCode_24.Views.MainView"
+             x:DataType="vm:MainViewModel">
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:MainViewModel />
+  </Design.DataContext>
+  <Grid Background="#FF2F2F2F">
+    <!-- Layout -->
+    <Grid.RowDefinitions>
+      <RowDefinition Height="auto"/>
+      <RowDefinition Height="auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"></ColumnDefinition>
+      <ColumnDefinition Width="5"></ColumnDefinition>
+      <ColumnDefinition Width="*"></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+
+    <GridSplitter Grid.Column="1" Grid.Row="2" Grid.RowSpan="2" Background="#7F000000" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Width="3"/>
+    <Label Foreground="#FF989898"  Background="#33000000" Grid.Row="1">Log:</Label>
+    <Label Foreground="#FF989898"  Background="#33000000" Grid.Row="1" Grid.Column="2">Visualizer:</Label>
+    <TextBlock Grid.Row="2" Grid.Column="0"></TextBlock>
+
+    <!-- Menu -->
+    <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+
+      <StackPanel Orientation="Horizontal">
+        <Label Content=" Year" VerticalAlignment="Center"/>
+        <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear}"/>
+        <Label Content=" Day" VerticalAlignment="Center"/>
+        <ComboBox ItemsSource="{Binding Days}" SelectedItem="{Binding SelectedDay}"/>
+        <Label Content=" Part" VerticalAlignment="Center"/>
+        <ComboBox ItemsSource="{Binding Parts}" SelectedItem="{Binding SelectedPart}"/>
+
+
+        <Button Content="Run" Command="{Binding Run}"  Width="100" IsEnabled="{Binding CanRun}" TextBlock.TextAlignment="Center"/>
+
+        <Button Content="Run Test" Width="100" Command="{Binding RunTest}" IsEnabled="{Binding CanRunTest}" TextBlock.TextAlignment="Center"/>
+        <Menu>
+          <MenuItem Header="Test Data" IsEnabled="{Binding CanRun}" Background="#252525" Margin="2,2,2,2">
+            <StackPanel Width="300" >
+              <Label Content="Data:"/>
+              <TextBox Text="{Binding TestData}" Height="300" TextWrapping="Wrap" AcceptsReturn="True" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+              <Label Content="Expected Result:"/>
+              <TextBox Text="{Binding TestResult}"/>
+              <Button Content="Save" Command="{Binding SaveTestData}"/>
+            </StackPanel>
+          </MenuItem>
+        </Menu>
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+        <Menu>
+          <MenuItem Header="Cookie" IsEnabled="{Binding CanRun}" Background="#252525" Margin="2,2,2,2">
+            <StackPanel Width="300">
+              <Label Content="Data:"/>
+              <TextBox Text="{Binding Cookie}"/>
+              <Button Content="Save" Command="{Binding SaveCookie}"/>
+            </StackPanel>
+          </MenuItem>
+        </Menu>
+        <Button Content="Site" Command="{Binding OpenSite}"/>
+      </StackPanel>
+    </Grid>
+
+
+    <!-- Visualization -->
+    <Image Source="{Binding Visualization}" Grid.Row="2" Grid.Column="2"/>
+
+    <!-- Log -->
+    <Grid Grid.Row="2">
+      <ScrollBar HorizontalAlignment="Right" Background="#FF6D6D6D" BorderBrush="#00424242" Foreground="#00000000"/>
+      <ListBox ItemsSource="{Binding Log}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Background="#0F1F09">
+        <ListBox.Styles>
+          <Style Selector="ListBoxItem">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="1"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontFamily" Value="Lucida Console"/>
+          </Style>
+        </ListBox.Styles>
+      </ListBox>
+    </Grid>
+  </Grid>
+
+</UserControl>
