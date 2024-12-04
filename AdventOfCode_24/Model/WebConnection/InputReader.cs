@@ -1,6 +1,10 @@
+using System;
+using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
-namespace AoC.WebConnection;
+namespace AdventOfCode_24.Model.WebConnection;
 
 public class InputReader
 {

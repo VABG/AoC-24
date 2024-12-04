@@ -1,9 +1,20 @@
-using AoC.WebConnection;
+using AdventOfCode_24.Model.Days;
+using AdventOfCode_24.Model.WebConnection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace AoC.Days._1;
+namespace AdventOfCode_24.Days;
 
 public class Day1 : Day
 {
+    public override int DayNumber => 1;
+    
+    public Day1()
+    { 
+        
+    }
+
     public override async void Run()
     {
         var input = await InputReader.Read(1);
@@ -15,9 +26,9 @@ public class Day1 : Day
         {
             if (string.IsNullOrEmpty(line))
                 break;
-            
+
             var values = line.Split(' ');
-            
+
             if (int.TryParse(values.First(), out var leftVal))
                 left.Add(leftVal);
             if (int.TryParse(values.Last(), out var rightVal))
@@ -28,7 +39,6 @@ public class Day1 : Day
         right.Sort();
 
         var total = left.Select((t, i) => Math.Abs(t - right[i])).Sum();
-        Console.WriteLine(total);
+        Log(total.ToString());
     }
-
 }
