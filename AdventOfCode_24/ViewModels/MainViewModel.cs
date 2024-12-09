@@ -1,20 +1,18 @@
 ﻿using AdventOfCode_24.Model.Days;
 using AdventOfCode_24.Model.WebConnection;
-using AdventOfCode_24.Views;
-using ReactiveUI;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using AdventOfCode_24.Model.Logging;
+using Avalonia.Logging;
+using DynamicData;
 
 namespace AdventOfCode_24.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
     // TODO: Connect visualizer
-
-    public Interaction<TestDataViewModel, TestDataView?> ShowDialog { get; }
-
 
     public List<int> Years { get; }
 
@@ -69,10 +67,7 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public List<string>? Log
-    {
-        get => SelectedDay?.Logger.Messages.ToList();
-    }
+    public ObservableCollection<LogMessage> Log { get; } = [];
 
     private AllDays _allDays;
 
@@ -142,11 +137,13 @@ public class MainViewModel : ViewModelBase
         CanRun = false;
 
         if (_selectedDay != null)
-            _selectedDay.Logger.UpdateMessage -= LogUpdated;
+            _selectedDay.Log.UpdateMessage -= LogUpdated;
 
         _selectedDay = newDay;
         await _selectedDay.Load();
-        _selectedDay.Logger.UpdateMessage += LogUpdated;
+        _selectedDay.Log.UpdateMessage += LogUpdated;
+        Log.Clear();
+        Log.AddRange(_selectedDay.Log.Messages);
         OnPropertyChanged(nameof(SelectedDay));
         Parts = _selectedDay.PartNumbers;
         if (Parts.Count == 0)
@@ -171,9 +168,9 @@ public class MainViewModel : ViewModelBase
     }
 
 
-    private void LogUpdated()
+    private void LogUpdated(LogMessage message)
     {
-        OnPropertyChanged(nameof(Log));
+        Log.Add(message);
     }
 
     public async void Run()
@@ -194,8 +191,9 @@ public class MainViewModel : ViewModelBase
 
     private async Task Run(bool isTest)
     {
+        Log.Clear();
         if (SelectedPart == -1)
-            _selectedDay.Logger.Write("No parts implemented!");
+            _selectedDay.Log.Log("No parts implemented!");
         await _selectedDay.Load();
         _selectedDay.Run(SelectedPart, isTest);
     }

@@ -12,19 +12,14 @@ namespace AdventOfCode_24.Model.Days;
 public abstract class Day : IDay, IComparable<IDay>
 {
     public PixelRenderer? Visualization { get; private set; }
-    public Log Logger { get; } = new Log();
+    public LogMessages Log { get; } = new LogMessages();
     public DayData? Data { get; private set; } = null;
     public abstract int DayNumber { get; }
     public abstract int Year { get; }
-    protected string[] Input;
+    protected string[] Input = [];
     public List<int> PartNumbers => Parts.Keys.ToList();
 
     protected Dictionary<int, Func<string>> Parts { get; private set; } = [];
-
-    public Day()
-    {
-
-    }
 
     public async Task Load()
     {
@@ -37,8 +32,8 @@ public abstract class Day : IDay, IComparable<IDay>
         }
         catch (Exception ex)
         {
-            Logger.Write("Issue reading data:");
-            Logger.Write(ex.Message);
+            Log.Log("Issue reading data:");
+            Log.Log(ex.Message);
         }
     }
 
@@ -47,15 +42,15 @@ public abstract class Day : IDay, IComparable<IDay>
     {
         InputToLines(isTest ? Data?.TestInput : Data?.Input);
 
-        Logger.Messages.Clear();
-        Logger.Write("Starting Run for: " + Year + "." + DayNumber + "." + part);
-        Logger.Write("...");
+        Log.Messages.Clear();
+        Log.Log("Starting " + (isTest ? "Test" : "Run") + " for: " + Year + "." + DayNumber + "." + part);
+        Log.Log("...");
         var start = DateAndTime.Now;
 
         string result = string.Empty;
         if (Data == null)
         {
-            Logger.Write("No data! Can not run Day!");
+            Log.Error("No data! Can not run Day!");
             return;
         }
         try
@@ -64,38 +59,33 @@ public abstract class Day : IDay, IComparable<IDay>
         }
         catch (Exception ex)
         {
-            Logger.Write(ex.Message);
+            Log.Log(ex.Message);
         }
         
         var end = DateAndTime.Now;
         var time = end.Subtract(start);
-        Logger.Write("");
-        Logger.Write("Run Ended after: " + time.ToString());
-        Logger.Write("");
+        Log.Log("");
+        Log.Log("Run Ended after: " + time.ToString());
+        Log.Log("");
         if (isTest)
         {
             if (result == string.Empty)
-                Logger.Write("Failed: No Result");
+                Log.Error("Failed: No Result");
             if (!string.IsNullOrEmpty(Data.TestResult))
             {
                 if (result == Data.TestResult)
-                    Logger.Write("Test Succeeded!");
+                    Log.Success("Test Successful!");
                 else
-                    Logger.Write("Test Failed!");
+                    Log.Error("Test Failed!");
 
-                Logger.Write("");
-                Logger.Write("Expected:");
-                Logger.Write(Data.TestResult);
+                Log.Log("");
+                Log.Log("Expected:");
+                Log.Log(Data.TestResult);
             }
         }
 
-        Logger.Write("Result:");
-        Logger.Write(result);
-    }
-
-    protected void Log(string message)
-    {
-        Logger.Write(message);
+        Log.Log("Result:");
+        Log.Log(result);
     }
 
     private void InputToLines(string input)

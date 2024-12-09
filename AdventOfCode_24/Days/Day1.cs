@@ -12,7 +12,7 @@ public class Day1 : Day
 
     public Day1()
     {
-        Parts.Add(1, new Func<string>(Part1));
+        Parts.Add(1, Part1);
     }
 
     private string Part1()
