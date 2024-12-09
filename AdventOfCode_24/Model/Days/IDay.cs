@@ -4,7 +4,7 @@ public interface IDay
 {
     void Run(int part, bool isTest);
 
-    int DayNumber { get; }
     int Year { get; }
+    int DayNumber { get; }
 
 }

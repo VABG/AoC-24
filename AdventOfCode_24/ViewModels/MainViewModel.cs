@@ -1,4 +1,5 @@
-﻿using AdventOfCode_24.Model.Days;
+﻿using System;
+using AdventOfCode_24.Model.Days;
 using AdventOfCode_24.Model.WebConnection;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,6 +15,9 @@ public class MainViewModel : ViewModelBase
 {
     // TODO: Connect visualizer
 
+    private bool _isWaitingForScrollDelay;
+    private LogMessage ScrollTarget = null;
+    
     public List<int> Years { get; }
 
     private int _selectedYear;
@@ -69,6 +73,16 @@ public class MainViewModel : ViewModelBase
     }
 
     public ObservableCollection<LogMessage> Log { get; } = [];
+    private LogMessage _selectedLogItem;
+    public LogMessage SelectedLogItem
+    {
+        get => _selectedLogItem;
+        set
+        {
+            _selectedLogItem = value;
+            OnPropertyChanged(nameof(SelectedLogItem));
+        }
+    }
 
     private AllDays _allDays;
 
@@ -170,9 +184,21 @@ public class MainViewModel : ViewModelBase
     }
 
 
-    private void LogUpdated(LogMessage message)
+    private async void LogUpdated(LogMessage message)
     {
         Log.Add(message);
+        ScrollTarget = message;
+        if (_isWaitingForScrollDelay)
+            return;
+        _isWaitingForScrollDelay = true;
+        Wait();
+    }
+
+    private async Task Wait()
+    {
+        await Task.Delay(TimeSpan.FromMilliseconds(1));
+        SelectedLogItem = ScrollTarget;
+        _isWaitingForScrollDelay = false;
     }
 
     public async void Run()

@@ -6,20 +6,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Media;
 
 namespace AdventOfCode_24.Model.Days;
 
 public abstract class Day : IDay, IComparable<IDay>
 {
     public PixelRenderer? Visualization { get; private set; }
-    public LogMessages Log { get; } = new LogMessages();
-    public DayData? Data { get; private set; } = null;
-    public abstract int DayNumber { get; }
+    public LogMessages Log { get; } = new();
+    public DayData? Data { get; private set; }
     public abstract int Year { get; }
+    public abstract int DayNumber { get; }
     protected string[] Input = [];
     public List<int> PartNumbers => Parts.Keys.ToList();
 
-    protected Dictionary<int, Func<string>> Parts { get; private set; } = [];
+    protected Dictionary<int, Func<string>> Parts { get; } = [];
 
     public async Task Load()
     {
@@ -43,9 +44,9 @@ public abstract class Day : IDay, IComparable<IDay>
         InputToLines(isTest ? Data?.TestInput : Data?.Input);
 
         Log.Messages.Clear();
-        Log.Log("Starting " + (isTest ? "Test" : "Run") + " for: " + Year + "." + DayNumber + "." + part);
-        Log.Log("...");
         var start = DateAndTime.Now;
+        Log.Log("Starting " + (isTest ? "Test" : "Run") + " for: " + Year + "." + DayNumber + "." + part + "\n" + start);
+        Log.Log("...");
 
         string result = string.Empty;
         if (Data == null)
@@ -59,13 +60,16 @@ public abstract class Day : IDay, IComparable<IDay>
         }
         catch (Exception ex)
         {
-            Log.Log(ex.Message);
+            Log.Error(ex.Message);
+            if (ex.StackTrace != null)
+                Log.Error(ex.StackTrace);
         }
         
         var end = DateAndTime.Now;
         var time = end.Subtract(start);
         Log.Log("");
-        Log.Log("Run Ended after: " + time.ToString());
+        Log.Log("Run ended at:\n" + end);
+        Log.Write("Time: " + time.ToString(), Colors.CornflowerBlue);
         Log.Log("");
         if (isTest)
         {
@@ -86,7 +90,7 @@ public abstract class Day : IDay, IComparable<IDay>
         }
 
         Log.Log("Result:");
-        Log.Log(result);
+        Log.Write(result, Colors.Orange);
     }
 
     private void InputToLines(string input)

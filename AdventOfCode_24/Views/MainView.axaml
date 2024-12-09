@@ -31,7 +31,7 @@
 
         <GridSplitter Grid.Column="1" Grid.Row="2" Background="#7F000000" VerticalAlignment="Stretch"
                       ResizeBehavior="PreviousAndNext" Width="3" />
-        <Label Foreground="#FF989898" Background="#33000000"  Grid.Column="0" Grid.Row="1">Log:</Label>
+        <Label Foreground="#FF989898" Background="#33000000" Grid.Column="0" Grid.Row="1">Log:</Label>
         <Label Foreground="#FF989898" Background="#33000000" Grid.Row="1" Grid.Column="2">Visualizer:</Label>
         <TextBlock Grid.Row="2" Grid.Column="0"></TextBlock>
 
@@ -92,21 +92,27 @@
         <Grid Grid.Row="2" Grid.Column="0">
             <ScrollBar HorizontalAlignment="Right" Background="#FF6D6D6D" BorderBrush="#00424242"
                        Foreground="#00000000" />
-            <ListBox ItemsSource="{Binding Log}" ScrollViewer.VerticalScrollBarVisibility="Auto"
+            <ListBox ItemsSource="{Binding Log}" 
+                     SelectedItem="{Binding SelectedLogItem}"
+                     AutoScrollToSelectedItem="True"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ScrollViewer.IsScrollInertiaEnabled="False"
+                     ScrollViewer.IsDeferredScrollingEnabled="True"
                      ScrollViewer.HorizontalScrollBarVisibility="Auto" Background="#0F1F09">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Message}"
-                                   Foreground="{Binding Color, 
-                                   Converter={StaticResource ColorToBrushConverter}}">
-                            <TextBlock.ContextMenu>
+                        <Grid HorizontalAlignment="Stretch">
+                            <TextBlock Text="{Binding Message}"
+                                       Foreground="{Binding Color, 
+                                   Converter={StaticResource ColorToBrushConverter}}" />
+                            <Grid.ContextMenu>
                                 <ContextMenu Name="BlockMenu">
-                                    <MenuItem Header="Copy to Clipboard" 
+                                    <MenuItem Header="Copy to Clipboard"
                                               Command="{Binding CopyToClipboard}"
-                                              CommandParameter="{Binding ElementName=ViewControl}"/>
+                                              CommandParameter="{Binding ElementName=ViewControl}" />
                                 </ContextMenu>
-                            </TextBlock.ContextMenu>
-                        </TextBlock>
+                            </Grid.ContextMenu>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.Styles>
