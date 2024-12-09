@@ -59,8 +59,7 @@ public class InputReader
 
     private static async Task<string> ReadFromWeb(int day)
     {
-        // TODO: Get from UI, keep on drive (not in solution)
-        string cookie = CookieData.ActiveCookie;
+        var cookie = CookieData.ActiveCookie;
         if (string.IsNullOrEmpty(cookie))
             throw new Exception("Cookie is missing/empty!");
 
@@ -82,7 +81,7 @@ public class InputReader
 
     public static void OpenSite(int year, int day)
     {
-        string site = @"https://adventofcode.com/" + year + "/day/" + day;
+        var site = @"https://adventofcode.com/" + year + "/day/" + day;
         Process.Start(new ProcessStartInfo(site) { UseShellExecute = true });
     }
 }

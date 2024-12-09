@@ -20,7 +20,7 @@ public abstract class Day : IDay, IComparable<IDay>
     protected string[] Input = [];
     public List<int> PartNumbers => Parts.Keys.ToList();
 
-    protected Dictionary<int, Func<string>> Parts { get; private set; } = [];
+    private Dictionary<int, Func<string>> Parts { get; set; } = [];
 
     public async Task Load()
     {

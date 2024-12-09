@@ -19,7 +19,7 @@ namespace AdventOfCode_24.Model.Days
             {
                 ReadParts(instance);
                 if (!Days.ContainsKey(instance.Year))
-                    Days[instance.Year] = new List<Day>();
+                    Days[instance.Year] = [];
 
                 Days[instance.Year].Add(instance as Day);
             }
@@ -39,7 +39,7 @@ namespace AdventOfCode_24.Model.Days
             Dictionary<int, Func<string>> partMethods = [];
             foreach (var method in methods)
             {
-                string methodName = method.Name;
+                var methodName = method.Name;
                 if (!methodName.StartsWith("Part") || method.ReturnType != typeof(string))
                     continue;
 
@@ -47,7 +47,7 @@ namespace AdventOfCode_24.Model.Days
                 if (!int.TryParse(nrString, out var nr))
                     return;
                 
-                Func<string> result = Expression.Lambda<Func<string>>(
+                var result = Expression.Lambda<Func<string>>(
                     Expression.Call(Expression.Constant(day), method)).Compile();
 
                 partMethods.Add(nr, result);
