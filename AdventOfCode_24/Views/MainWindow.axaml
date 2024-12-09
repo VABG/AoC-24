@@ -29,7 +29,7 @@
                                 <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                <Label Margin="20,5,0,0">Advent Of Code</Label>
+                                <Label Margin="20,10,0,0">Advent Of Code</Label>
                         </StackPanel>
                         <views:MainView Grid.Row="1" Margin="10"/>
                 </Grid>

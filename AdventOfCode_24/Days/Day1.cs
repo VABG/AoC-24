@@ -10,12 +10,6 @@ public class Day1 : Day
     public override int Year => 2024;
     public override int DayNumber => 1;
 
-    public Day1()
-    {
-        Parts.Add(1, Part1);
-        Parts.Add(2, Part2);
-    }
-
     private string Part1()
     {
         List<int> left = [];

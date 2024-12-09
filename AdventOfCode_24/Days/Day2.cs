@@ -9,11 +9,6 @@ public class Day2 : Day
     public override int Year => 2024;
     public override int DayNumber => 2;
 
-    public Day2()
-    {
-        Parts.Add(1, Part1);    
-    }
-
     private string Part1()
     {
         var safeReports = 0;

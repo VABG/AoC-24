@@ -97,7 +97,7 @@
                      ScrollViewer.IsScrollInertiaEnabled="False"
                      ScrollViewer.IsDeferredScrollingEnabled="True"
                      ScrollViewer.HorizontalScrollBarVisibility="Auto" 
-                     Background="#25114E00">
+                     Background="#C3030900">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid HorizontalAlignment="Stretch">

@@ -20,7 +20,7 @@ public abstract class Day : IDay, IComparable<IDay>
     protected string[] Input = [];
     public List<int> PartNumbers => Parts.Keys.ToList();
 
-    protected Dictionary<int, Func<string>> Parts { get; } = [];
+    protected Dictionary<int, Func<string>> Parts { get; private set; } = [];
 
     public async Task Load()
     {
@@ -37,7 +37,6 @@ public abstract class Day : IDay, IComparable<IDay>
             Log.Log(ex.Message);
         }
     }
-
 
     public void Run(int part, bool isTest)
     {
@@ -116,6 +115,11 @@ public abstract class Day : IDay, IComparable<IDay>
         var y = Year.CompareTo(other.Year);
         if (y != 0) return y;
         return DayNumber.CompareTo(other.DayNumber);
+    }
+
+    public void SetParts(Dictionary<int, Func<string>> functions)
+    {
+        Parts = functions;
     }
 
     public override string ToString()
