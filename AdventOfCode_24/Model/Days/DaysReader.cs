@@ -40,7 +40,7 @@ namespace AdventOfCode_24.Model.Days
             foreach (var method in methods)
             {
                 string methodName = method.Name;
-                if (!methodName.StartsWith("Part"))
+                if (!methodName.StartsWith("Part") || method.ReturnType != typeof(string))
                     continue;
 
                 var nrString = methodName.Substring(4, methodName.Length-4);
