@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace AdventOfCode_24.Model.Days
 {
-    public class AllDays
+    public class DaysReader
     {
-        public Dictionary<int, List<Day>> Days { get; private set; } = [];
+        public Dictionary<int, List<Day>> Days { get; } = [];
 
-        public AllDays()
+        public DaysReader()
         {
 
             var types = TypesImplementingInterface(typeof(IDay)).ToList();
@@ -46,14 +46,14 @@ namespace AdventOfCode_24.Model.Days
             return implementations;
         }
 
-        public static bool IsRealClass(Type testType)
+        private static bool IsRealClass(Type testType)
         {
             return testType.IsAbstract == false
                  && testType.IsGenericTypeDefinition == false
                  && testType.IsInterface == false;
         }
 
-        public static IEnumerable<Type> TypesImplementingInterface(Type desiredType)
+        private static IEnumerable<Type> TypesImplementingInterface(Type desiredType)
         {
             return AppDomain
                    .CurrentDomain

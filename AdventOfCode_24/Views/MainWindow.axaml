@@ -9,6 +9,29 @@
         Icon="/Assets/christmas_tree_icon.ico"
         Title="AdventOfCode_24"
         Width="1024"
-        Height="512">
-        <views:MainView />
+        Height="512"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True">
+        <Panel>
+                <ExperimentalAcrylicBorder IsHitTestVisible="False">
+                        <ExperimentalAcrylicBorder.Material>
+                                <ExperimentalAcrylicMaterial
+                                        BackgroundSource="Digger"
+                                        TintColor="Black"
+                                        TintOpacity="1"
+                                        MaterialOpacity="0.1" />
+                        </ExperimentalAcrylicBorder.Material>
+                </ExperimentalAcrylicBorder>
+                <Grid>
+                        <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <Label Margin="20,5,0,0">Advent Of Code</Label>
+                        </StackPanel>
+                        <views:MainView Grid.Row="1" Margin="10"/>
+                </Grid>
+        </Panel>
 </Window>

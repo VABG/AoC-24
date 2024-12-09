@@ -84,7 +84,7 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private AllDays _allDays;
+    private DaysReader _daysReader;
 
     private bool _canRun;
     public bool CanRun
@@ -140,8 +140,8 @@ public class MainViewModel : ViewModelBase
 
     public MainViewModel()
     {
-        _allDays = new AllDays();
-        Years = _allDays.Days.Keys.ToList();
+        _daysReader = new DaysReader();
+        Years = _daysReader.Days.Keys.ToList();
         SelectedYear = Years.Last();
         ChangeYear();
         Cookie = CookieData.ActiveCookie;
@@ -179,7 +179,7 @@ public class MainViewModel : ViewModelBase
     private void ChangeYear()
     {
         OnPropertyChanged(nameof(SelectedYear));
-        Days = _allDays.Days[SelectedYear];
+        Days = _daysReader.Days[SelectedYear];
         SelectedDay = Days.Last();
     }
 
