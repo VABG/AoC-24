@@ -53,7 +53,7 @@
                 <Button Content="Run" Command="{Binding Run}" Width="100" IsEnabled="{Binding CanRun}"
                         TextBlock.TextAlignment="Center" />
 
-                <Button Content="Run Test" Width="100" Command="{Binding RunTest}" IsEnabled="{Binding CanRunTest}"
+                <Button Content="Test" Width="100" Command="{Binding RunTest}" IsEnabled="{Binding CanRunTest}"
                         TextBlock.TextAlignment="Center" />
                 <Menu>
                     <MenuItem Header="Test Data" IsEnabled="{Binding CanRun}" Background="#252525" Margin="2,2,2,2">

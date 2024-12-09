@@ -63,6 +63,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             _selectedPart = value;
+            OnPropertyChanged(nameof(TestResult));
             OnPropertyChanged(nameof(SelectedPart));
         }
     }
@@ -96,13 +97,14 @@ public class MainViewModel : ViewModelBase
 
     public string? TestResult
     {
-        get => SelectedDay?.Data?.TestResult;
+        get => SelectedDay?.Data?.GetExpectedForPart(SelectedPart);
         set
         {
-            if (SelectedDay != null && SelectedDay.Data != null)
-                SelectedDay.Data.TestResult = value;
+            if (SelectedDay is { Data: not null })
+            {
+                SelectedDay.Data.SetExpectedForPart(_selectedPart, value);
+            }
             OnPropertyChanged(nameof(TestResult));
-            OnPropertyChanged(nameof(CanRunTest));
         }
     }
 

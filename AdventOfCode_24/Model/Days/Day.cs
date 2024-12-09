@@ -71,16 +71,17 @@ public abstract class Day : IDay, IComparable<IDay>
         {
             if (result == string.Empty)
                 Log.Error("Failed: No Result");
-            if (!string.IsNullOrEmpty(Data.TestResult))
+            string? expected = Data.GetExpectedForPart(part);
+            if (!string.IsNullOrEmpty(expected))
             {
-                if (result == Data.TestResult)
+                if (result == expected)
                     Log.Success("Test Successful!");
                 else
                     Log.Error("Test Failed!");
 
                 Log.Log("");
                 Log.Log("Expected:");
-                Log.Log(Data.TestResult);
+                Log.Log(expected);
             }
         }
 
