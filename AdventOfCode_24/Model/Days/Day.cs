@@ -94,7 +94,22 @@ public abstract class Day : IDay, IComparable<IDay>
 
     private void InputToLines(string input)
     {
-        Input = input.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
+        var splitInput = input.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
+        Input = ClearEmptyLineAtEnd(splitInput);
+    }
+
+    private string[] ClearEmptyLineAtEnd(string[] input)
+    {
+        if (!string.IsNullOrEmpty(input.Last()))
+            return input;
+        
+        string[] newInput = new string[input.Length - 1];
+        for (int i = 0; i < input.Length-1; i++)
+        {
+            newInput[i] = input[i];
+        }
+
+        return newInput;
     }
 
     protected void MakeVisualization(int width, int height)
