@@ -3,10 +3,12 @@ using AdventOfCode_24.Model.Days;
 using AdventOfCode_24.Model.WebConnection;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AdventOfCode_24.Model.Logging;
 using AdventOfCode_24.Model.Visualization;
+using Avalonia;
 using Avalonia.Media.Imaging;
 using DynamicData;
 
@@ -14,15 +16,17 @@ namespace AdventOfCode_24.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-    private RenderControl? _renderableControl;
+    public WriteableBitmap? WriteableBitmap => _selectedDay?.Renderer?.WriteableBitmap;
 
-    public RenderControl? RenderableControl
+    private bool _wiggleState = true;
+    private Thickness _wiggleThickness;
+    public Thickness WiggleThickness
     {
-        get => _renderableControl;
+        get => _wiggleThickness;
         set
         {
-            _renderableControl = value;
-            OnPropertyChanged(nameof(RenderableControl));
+            _wiggleThickness = value;
+            OnPropertyChanged(nameof(WiggleThickness));
         }
     }
 
@@ -200,15 +204,11 @@ public class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(CanRunTest));
     }
 
-    private void VisualizationOnUpdateVisuals(WriteableBitmap bitmap)
+    private void VisualizationOnUpdateVisuals()
     {
-        if (_renderableControl == null)
-        {
-            _renderableControl = new RenderControl();
-            OnPropertyChanged(nameof(RenderableControl));
-        }
-        _renderableControl.UpdateBitmap(bitmap);
-        _renderableControl.Update();
+        OnPropertyChanged(nameof(WriteableBitmap));
+        WiggleThickness = new Thickness(_wiggleState ? 1 : 0, _wiggleState ? 0:1);
+        _wiggleState = !_wiggleState;
     }
 
     private void UpdateLog()
@@ -257,14 +257,14 @@ public class MainViewModel : ViewModelBase
         _isWaitingForScrollDelay = false;
     }
 
-    public async void Run()
+    public void Run()
     {
-        await Run(false);
+        Run(false);
     }
 
-    public async void RunTest()
+    public void RunTest()
     {
-        await Run(true);
+        Run(true);
     }
 
     public void OpenSite()

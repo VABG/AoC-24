@@ -87,7 +87,16 @@
 
 
         <!-- Visualization -->
-        <ContentControl Content="{Binding RenderableControl}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <Grid Grid.Row="2" Grid.Column="2">
+            <ContentControl Margin="{Binding WiggleThickness}">
+                <Image 
+                    Source="{Binding WriteableBitmap}" 
+                    RenderOptions.BitmapInterpolationMode="None"
+                    Margin="10"/>
+            </ContentControl>
+
+        </Grid>
+      
 
         <!-- Log -->
         <Grid Grid.Row="2" Grid.Column="0">

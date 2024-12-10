@@ -1,16 +1,17 @@
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 
 namespace AdventOfCode_24.Model.Visualization;
 
 public class PixelRenderer
 {
-    public  WriteableBitmap WriteableBitmap { get; }
+    public WriteableBitmap WriteableBitmap { get; }
     
     public PixelRenderer(int width, int height)
     {
-        WriteableBitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(96, 96));
+        WriteableBitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Unpremul);
     }
     
     public void DrawPixel(Pixel pixel)
@@ -24,11 +25,38 @@ public class PixelRenderer
         unsafe
         {
             foreach (var pixel in pixels)
+                SafeDrawAt(pixel, lockedFrameBuffer);
+        }
+    }
+
+    public void DrawPixels(Pixel[,] pixels2d)
+    {
+        using var lockedFrameBuffer = WriteableBitmap.Lock();
+        {
+            for (int y = 0; y < pixels2d.GetLength(0); y++)
             {
-                nint bufferPtr = new nint(lockedFrameBuffer.Address.ToInt64());
-                bufferPtr += (int)WriteableBitmap.Size.Width * 4 * pixel.Y + pixel.X;
-                *(int*)bufferPtr = (int)pixel.Color.ToUInt32();
+                for (int x= 0; x < pixels2d.GetLength(1); x++)
+                {
+                    var pixel = pixels2d[y, x];
+                    SafeDrawAt(pixel, lockedFrameBuffer);
+                }
             }
+        }
+    }
+
+    private void SafeDrawAt(Pixel pixel, ILockedFramebuffer lockedFrameBuffer)
+    {
+        if (pixel.X < 0 ||
+            pixel.Y < 0 || 
+            pixel.X >= lockedFrameBuffer.Size.Width ||
+            pixel.Y >= lockedFrameBuffer.Size.Height)
+            return;
+        
+        unsafe
+        {
+            nint bufferPtr = new nint(lockedFrameBuffer.Address.ToInt64());
+            bufferPtr += (int)WriteableBitmap.Size.Width * (nint)4 * pixel.Y + (pixel.X*(nint)4);
+            *(int*)bufferPtr = (int)pixel.Color.ToUInt32();
         }
     }
 

@@ -4,6 +4,7 @@ using AdventOfCode_24.Model.WebConnection;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Media;
@@ -13,7 +14,7 @@ namespace AdventOfCode_24.Model.Days;
 
 public abstract class Day : IDay, IComparable<IDay>
 {
-    protected PixelRenderer? Visualization { get; private set; }
+    public PixelRenderer? Renderer { get; private set; }
     public LogMessages Log { get; } = new();
     public DayData? Data { get; private set; }
     public abstract int Year { get; }
@@ -21,10 +22,26 @@ public abstract class Day : IDay, IComparable<IDay>
     protected string[] Input = [];
     public List<int> PartNumbers => Parts.Keys.ToList();
 
+    private readonly BackgroundWorker _worker;
+    private int _partToRun;
+    private bool _isTest;
+    public bool IsRunning { get; private set; }
+
     private Dictionary<int, Func<string>> Parts { get; set; } = [];
     
-    public delegate void VisualsUpdated(WriteableBitmap bitmap);
+    public delegate void VisualsUpdated();
     public event VisualsUpdated UpdateVisuals;
+
+    public Day()
+    {
+        _worker = new BackgroundWorker();
+        _worker.DoWork += WorkerOnDoWork;
+    }
+
+    private void WorkerOnDoWork(object? sender, DoWorkEventArgs e)
+    {
+        Run();
+    }
 
     public async Task Load()
     {
@@ -44,6 +61,17 @@ public abstract class Day : IDay, IComparable<IDay>
 
     public void Run(int part, bool isTest)
     {
+        _partToRun = part;
+        _isTest = isTest;
+        _worker.RunWorkerAsync();
+    }
+
+    private void Run()
+    {
+        IsRunning = true;
+        var isTest = _isTest;
+        var part = _partToRun;
+        
         if (Data == null)
         {
             Log.Error("No data! Can not run Day!");
@@ -51,7 +79,7 @@ public abstract class Day : IDay, IComparable<IDay>
         }
         
         InputToLines(isTest ? Data?.TestInput : Data?.Input);
-        Visualization?.Clear(Colors.Transparent);
+        Renderer?.Clear(Colors.Transparent);
         Log.Messages.Clear();
         var start = DateAndTime.Now;
         Log.Log("Starting " + (isTest ? "Test" : "Run") + " for: " + Year + "." + DayNumber + "." + part + "\n" +
@@ -82,6 +110,7 @@ public abstract class Day : IDay, IComparable<IDay>
 
         Log.Log("Result:");
         Log.Write(result, Colors.Orange);
+        IsRunning = false;
     }
 
     private void UpdateTestInfo(string result, int part)
@@ -131,15 +160,15 @@ public abstract class Day : IDay, IComparable<IDay>
         return newInput;
     }
 
-    protected void MakeVisualization(int width, int height)
+    protected void CreateRenderer(int width, int height)
     {
-        Visualization = new PixelRenderer(width, height);
+        Renderer = new PixelRenderer(width, height);
     }
 
     protected void Render()
     {
-        if (Visualization != null)
-            UpdateVisuals(Visualization.WriteableBitmap);
+        if (Renderer != null)
+            UpdateVisuals();
     }
 
     public int CompareTo(IDay? other)

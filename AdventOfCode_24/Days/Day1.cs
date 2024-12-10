@@ -21,11 +21,6 @@ public class Day1 : Day
 
         left.Sort();
         right.Sort();
-
-        MakeVisualization(512, 512);
-        Visualization.Clear(Colors.Aqua);
-        //Visualization?.DrawPixel(new Pixel(256,256, Colors.Aqua));
-        Render();
         
         var total = left.Select((t, i) => Math.Abs(t - right[i])).Sum();
         return total.ToString();
