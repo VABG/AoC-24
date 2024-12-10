@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:AdventOfCode_24.ViewModels"
              xmlns:converters="clr-namespace:Avalonia.Markup.Xaml.Converters;assembly=Avalonia.Markup.Xaml"
+             xmlns:visualization="clr-namespace:AdventOfCode_24.Model.Visualization"
              mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="512"
              x:Class="AdventOfCode_24.Views.MainView"
              x:DataType="vm:MainViewModel"
@@ -86,7 +87,7 @@
 
 
         <!-- Visualization -->
-        <Image Source="{Binding Visualization}" Grid.Row="2" Grid.Column="2" />
+        <ContentControl Content="{Binding RenderableControl}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top" />
 
         <!-- Log -->
         <Grid Grid.Row="2" Grid.Column="0">
@@ -120,6 +121,12 @@
                         <Setter Property="Margin" Value="1" />
                         <Setter Property="Padding" Value="0" />
                         <Setter Property="FontFamily" Value="Lucida Console" />
+                    </Style>
+                    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                        <Setter Property="Background" Value="#498B0000"/>	
+                    </Style>
+                    <Style Selector="ListBoxItem:pressed /template/ ContentPresenter">
+                        <Setter Property="Background" Value="#490D8B00"/>	
                     </Style>
                 </ListBox.Styles>
             </ListBox>

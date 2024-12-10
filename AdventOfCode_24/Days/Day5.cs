@@ -42,7 +42,7 @@ public class Day5 : Day
             var correct = IsCorrect(line, rules);
             if (correct)
                 continue;
-            Log.Log(string.Join(',', line));
+            Log.Error(string.Join(',', line));
             total += GetSortedCenter(line, rules);
         }
 
@@ -55,7 +55,7 @@ public class Day5 : Day
         var comparer = new CompareInts(rules);
         sortable.Sort(comparer);
 
-        Log.Log(string.Join(',', sortable));
+        Log.Success(string.Join(',', sortable));
         return sortable[sortable.Count / 2];
     }
 

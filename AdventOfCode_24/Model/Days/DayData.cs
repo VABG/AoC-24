@@ -25,7 +25,7 @@ namespace AdventOfCode_24.Model.Days
         public string? TestInput { get; set; }
         public List<TestResult> TestResults { get; set; } = [];
 
-        public string? GetExpectedForPart(int part)
+        public string? GetExpectedForPart(int? part)
         {
             if (TestResults.Count == 0)
                 return null;
@@ -39,10 +39,12 @@ namespace AdventOfCode_24.Model.Days
             }
         }
 
-        public void SetExpectedForPart(int part, string? expected)
+        public void SetExpectedForPart(int? part, string? expected)
         {
+            if (part == null)
+                return;
             if (TestResults.Count == 0 || !TestResults.Exists(t => t.Part == part))
-                TestResults.Add(new TestResult() { Part = part, Result = expected });
+                TestResults.Add(new TestResult() { Part = part.Value, Result = expected });
             else
                 TestResults.First(t => t.Part == part).Result = expected;
         }

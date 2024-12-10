@@ -6,24 +6,36 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AdventOfCode_24.Model.Logging;
-using Avalonia.Logging;
+using AdventOfCode_24.Model.Visualization;
+using Avalonia.Media.Imaging;
 using DynamicData;
 
 namespace AdventOfCode_24.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-    // TODO: Connect visualizer
+    private RenderControl? _renderableControl;
+
+    public RenderControl? RenderableControl
+    {
+        get => _renderableControl;
+        set
+        {
+            _renderableControl = value;
+            OnPropertyChanged(nameof(RenderableControl));
+        }
+    }
 
     private bool _isWaitingForScrollDelay;
-    private LogMessage ScrollTarget = null;
-    
+    private LogMessage? _scrollTarget;
+
     public List<int> Years { get; }
 
     private int _selectedYear;
-    public int SelectedYear 
-    { 
-        get => _selectedYear; 
+
+    public int SelectedYear
+    {
+        get => _selectedYear;
         set
         {
             _selectedYear = value;
@@ -31,8 +43,9 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private List<Day> _days;
-    public List<Day> Days
+    private List<Day>? _days;
+
+    public List<Day>? Days
     {
         get => _days;
         set
@@ -42,26 +55,19 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private Day _selectedDay;
-    public Day SelectedDay
+    private Day? _selectedDay;
+
+    public Day? SelectedDay
     {
         get => _selectedDay;
         set => ChangeDay(value);
     }
 
-    private List<int> _parts;
-    public List<int> Parts
-    {
-        get => _parts;
-        set
-        {
-            _parts = value;
-            OnPropertyChanged(nameof(Parts));
-        }
-    }
+    public List<int>? Parts => _selectedDay?.PartNumbers;
 
-    private int _selectedPart;
-    public int SelectedPart
+    private int? _selectedPart;
+
+    public int? SelectedPart
     {
         get => _selectedPart;
         set
@@ -72,9 +78,10 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public ObservableCollection<LogMessage> Log { get; } = [];
-    private LogMessage _selectedLogItem;
-    public LogMessage SelectedLogItem
+    public ObservableCollection<LogMessage>? Log { get; } = [];
+    private LogMessage? _selectedLogItem;
+
+    public LogMessage? SelectedLogItem
     {
         get => _selectedLogItem;
         set
@@ -84,9 +91,10 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private DaysReader _daysReader;
+    private readonly DaysReader _daysReader;
 
     private bool _canRun;
+
     public bool CanRun
     {
         get => _canRun;
@@ -118,6 +126,7 @@ public class MainViewModel : ViewModelBase
             {
                 SelectedDay.Data.SetExpectedForPart(_selectedPart, value);
             }
+
             OnPropertyChanged(nameof(TestResult));
         }
     }
@@ -128,6 +137,7 @@ public class MainViewModel : ViewModelBase
     }
 
     private string _cookie;
+
     public string Cookie
     {
         get => _cookie;
@@ -144,36 +154,83 @@ public class MainViewModel : ViewModelBase
         Years = _daysReader.Days.Keys.ToList();
         SelectedYear = Years.Last();
         ChangeYear();
-        Cookie = CookieData.ActiveCookie;
-        SelectedDay = Days.Last();
+        _cookie = CookieData.ActiveCookie;
+        SelectedDay = Days?.Last();
     }
 
-    private async void ChangeDay(Day newDay)
+    private async void ChangeDay(Day? newDay)
     {
         CanRun = false;
 
         if (_selectedDay != null)
-            _selectedDay.Log.UpdateMessage -= LogUpdated;
-
-        _selectedDay = newDay;
-        await _selectedDay.Load();
-        _selectedDay.Log.UpdateMessage += LogUpdated;
-        Log.Clear();
-        Log.AddRange(_selectedDay.Log.Messages);
-        OnPropertyChanged(nameof(SelectedDay));
-        Parts = _selectedDay.PartNumbers;
-        if (Parts.Count == 0)
         {
-            SelectedPart = -1;
-            return;
+            _selectedDay.Log.UpdateMessage -= LogUpdated;
+                _selectedDay.UpdateVisuals -= VisualizationOnUpdateVisuals;
         }
 
-        SelectedPart = Parts.Last();
-        CanRun = true;
+        _selectedDay = newDay;
+        if (_selectedDay == null)
+        {
+            TestData = null;
+            TestResult = null;
+        }
+        else
+        {
+            await _selectedDay.Load();
+            if (Parts?.Count == 0)
+            {
+                SelectedPart = null;
+                return;
+            }
 
+            if (Parts != null)
+                SelectedPart = Parts.Last();
+            else
+                SelectedPart = null;
+            CanRun = true;
+        }
+
+        UpdateVisualization();
+        UpdateLog();
+
+        OnPropertyChanged(nameof(SelectedDay));
+        OnPropertyChanged(nameof(Parts));
         OnPropertyChanged(nameof(TestData));
         OnPropertyChanged(nameof(TestResult));
         OnPropertyChanged(nameof(CanRunTest));
+    }
+
+    private void VisualizationOnUpdateVisuals(WriteableBitmap bitmap)
+    {
+        if (_renderableControl == null)
+        {
+            _renderableControl = new RenderControl();
+            OnPropertyChanged(nameof(RenderableControl));
+        }
+        _renderableControl.UpdateBitmap(bitmap);
+        _renderableControl.Update();
+    }
+
+    private void UpdateLog()
+    {
+        if (_selectedDay == null)
+            return;
+
+        _selectedDay.Log.UpdateMessage += LogUpdated;
+        Log?.Clear();
+        Log?.AddRange(_selectedDay.Log.Messages);
+        if (Log != null && Log.Count != 0)
+            SelectedLogItem = Log?.Last();
+        else
+            SelectedLogItem = null;
+    }
+
+    private void UpdateVisualization()
+    {
+        if (_selectedDay == null)
+            return;
+        
+        _selectedDay.UpdateVisuals += VisualizationOnUpdateVisuals;
     }
 
     private void ChangeYear()
@@ -183,11 +240,10 @@ public class MainViewModel : ViewModelBase
         SelectedDay = Days.Last();
     }
 
-
-    private async void LogUpdated(LogMessage message)
+    private void LogUpdated(LogMessage message)
     {
-        Log.Add(message);
-        ScrollTarget = message;
+        Log?.Add(message);
+        _scrollTarget = message;
         if (_isWaitingForScrollDelay)
             return;
         _isWaitingForScrollDelay = true;
@@ -197,7 +253,7 @@ public class MainViewModel : ViewModelBase
     private async Task Wait()
     {
         await Task.Delay(TimeSpan.FromMilliseconds(1));
-        SelectedLogItem = ScrollTarget;
+        SelectedLogItem = _scrollTarget;
         _isWaitingForScrollDelay = false;
     }
 
@@ -219,11 +275,15 @@ public class MainViewModel : ViewModelBase
 
     private async Task Run(bool isTest)
     {
-        Log.Clear();
+        Log?.Clear();
         if (SelectedPart == -1)
-            _selectedDay.Log.Log("No parts implemented!");
+            _selectedDay?.Log.Log("No parts implemented!");
+        if (_selectedDay == null)
+            return;
         await _selectedDay.Load();
-        _selectedDay.Run(SelectedPart, isTest);
+        if (SelectedPart == null)
+            return;
+        _selectedDay.Run(SelectedPart.Value, isTest);
     }
 
     public void SaveTestData()

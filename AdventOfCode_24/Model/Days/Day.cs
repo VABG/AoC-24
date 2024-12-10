@@ -7,12 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 
 namespace AdventOfCode_24.Model.Days;
 
 public abstract class Day : IDay, IComparable<IDay>
 {
-    public PixelRenderer? Visualization { get; private set; }
+    protected PixelRenderer? Visualization { get; private set; }
     public LogMessages Log { get; } = new();
     public DayData? Data { get; private set; }
     public abstract int Year { get; }
@@ -21,6 +22,9 @@ public abstract class Day : IDay, IComparable<IDay>
     public List<int> PartNumbers => Parts.Keys.ToList();
 
     private Dictionary<int, Func<string>> Parts { get; set; } = [];
+    
+    public delegate void VisualsUpdated(WriteableBitmap bitmap);
+    public event VisualsUpdated UpdateVisuals;
 
     public async Task Load()
     {
@@ -40,19 +44,22 @@ public abstract class Day : IDay, IComparable<IDay>
 
     public void Run(int part, bool isTest)
     {
-        InputToLines(isTest ? Data?.TestInput : Data?.Input);
-
-        Log.Messages.Clear();
-        var start = DateAndTime.Now;
-        Log.Log("Starting " + (isTest ? "Test" : "Run") + " for: " + Year + "." + DayNumber + "." + part + "\n" + start);
-        Log.Log("...");
-
-        string result = string.Empty;
         if (Data == null)
         {
             Log.Error("No data! Can not run Day!");
             return;
         }
+        
+        InputToLines(isTest ? Data?.TestInput : Data?.Input);
+        Visualization?.Clear(Colors.Transparent);
+        Log.Messages.Clear();
+        var start = DateAndTime.Now;
+        Log.Log("Starting " + (isTest ? "Test" : "Run") + " for: " + Year + "." + DayNumber + "." + part + "\n" +
+                start);
+        Log.Log("...");
+
+        var result = string.Empty;
+
         try
         {
             result = Parts[part].Invoke();
@@ -63,7 +70,7 @@ public abstract class Day : IDay, IComparable<IDay>
             if (ex.StackTrace != null)
                 Log.Error(ex.StackTrace);
         }
-        
+
         var end = DateAndTime.Now;
         var time = end.Subtract(start);
         Log.Log("");
@@ -71,29 +78,41 @@ public abstract class Day : IDay, IComparable<IDay>
         Log.Write("Time: " + time.ToString(), Colors.CornflowerBlue);
         Log.Log("");
         if (isTest)
-        {
-            if (result == string.Empty)
-                Log.Error("Failed: No Result");
-            string? expected = Data.GetExpectedForPart(part);
-            if (!string.IsNullOrEmpty(expected))
-            {
-                if (result == expected)
-                    Log.Success("Test Successful!");
-                else
-                    Log.Error("Test Failed!");
-
-                Log.Log("");
-                Log.Log("Expected:");
-                Log.Log(expected);
-            }
-        }
+            UpdateTestInfo(result, part);
 
         Log.Log("Result:");
         Log.Write(result, Colors.Orange);
     }
 
-    private void InputToLines(string input)
+    private void UpdateTestInfo(string result, int part)
     {
+        if (result == string.Empty)
+        {
+            Log.Error("Failed: No Result");
+            return;
+        }
+        
+        var expected = Data?.GetExpectedForPart(part);
+        if (string.IsNullOrEmpty(expected)) 
+            return;
+        
+        if (result == expected)
+            Log.Success("Test Successful!");
+        else
+            Log.Error("Test Failed!");
+
+        Log.Log("");
+        Log.Log("Expected:");
+        Log.Log(expected);
+    }
+
+    private void InputToLines(string? input)
+    {
+        if (input == null)
+        {
+            Input = [];
+            return;
+        }
         var splitInput = input.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
         Input = ClearEmptyLineAtEnd(splitInput);
     }
@@ -102,9 +121,9 @@ public abstract class Day : IDay, IComparable<IDay>
     {
         if (!string.IsNullOrEmpty(input.Last()))
             return input;
-        
+
         string[] newInput = new string[input.Length - 1];
-        for (int i = 0; i < input.Length-1; i++)
+        for (int i = 0; i < input.Length - 1; i++)
         {
             newInput[i] = input[i];
         }
@@ -117,9 +136,10 @@ public abstract class Day : IDay, IComparable<IDay>
         Visualization = new PixelRenderer(width, height);
     }
 
-    protected void ClearVisualization()
+    protected void Render()
     {
-        Visualization = null;
+        if (Visualization != null)
+            UpdateVisuals(Visualization.WriteableBitmap);
     }
 
     public int CompareTo(IDay? other)

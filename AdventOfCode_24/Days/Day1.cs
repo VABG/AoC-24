@@ -2,6 +2,8 @@ using AdventOfCode_24.Model.Days;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdventOfCode_24.Model.Visualization;
+using Avalonia.Media;
 
 namespace AdventOfCode_24.Days;
 
@@ -20,6 +22,11 @@ public class Day1 : Day
         left.Sort();
         right.Sort();
 
+        MakeVisualization(512, 512);
+        Visualization.Clear(Colors.Aqua);
+        //Visualization?.DrawPixel(new Pixel(256,256, Colors.Aqua));
+        Render();
+        
         var total = left.Select((t, i) => Math.Abs(t - right[i])).Sum();
         return total.ToString();
     }
