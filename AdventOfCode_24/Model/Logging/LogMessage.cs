@@ -1,11 +1,10 @@
 using Avalonia.Media;
-using System.Windows;
 using Avalonia;
 using Avalonia.Controls;
 
 namespace AdventOfCode_24.Model.Logging;
 
-public class LogMessage(string message, Color color)
+public struct LogMessage(string message, Color color)
 {
     public string Message { get; } = message;
     public Color Color { get; } = color;
@@ -15,6 +14,6 @@ public class LogMessage(string message, Color color)
         if (msg is not Visual visual)
             return;
         var topLevel = TopLevel.GetTopLevel(visual);
-        topLevel?.Clipboard?.SetTextAsync(message);
+        topLevel?.Clipboard?.SetTextAsync(Message);
     }
 }

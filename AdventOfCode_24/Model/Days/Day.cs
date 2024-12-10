@@ -31,6 +31,9 @@ public abstract class Day : IDay, IComparable<IDay>
     
     public delegate void VisualsUpdated();
     public event VisualsUpdated UpdateVisuals;
+    
+    public delegate void RunComplete();
+    public event RunComplete CompleteRun;
 
     public Day()
     {
@@ -110,7 +113,7 @@ public abstract class Day : IDay, IComparable<IDay>
 
         Log.Log("Result:");
         Log.Write(result, Colors.Orange);
-        IsRunning = false;
+        CompleteRun();
     }
 
     private void UpdateTestInfo(string result, int part)

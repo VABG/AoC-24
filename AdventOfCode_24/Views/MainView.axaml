@@ -43,7 +43,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" IsEnabled="{Binding CanSwitchTest}">
                 <Label Content=" Year" VerticalAlignment="Center" />
                 <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear}" />
                 <Label Content=" Day" VerticalAlignment="Center" />

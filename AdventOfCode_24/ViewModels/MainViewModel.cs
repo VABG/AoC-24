@@ -20,6 +20,7 @@ public class MainViewModel : ViewModelBase
 
     private bool _wiggleState = true;
     private Thickness _wiggleThickness;
+
     public Thickness WiggleThickness
     {
         get => _wiggleThickness;
@@ -135,9 +136,19 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public bool CanRunTest
+    public bool CanRunTest => (SelectedDay?.Data?.TestInput != null
+                               && !SelectedDay.IsRunning);
+
+    private bool _canSwitchTest = true;
+
+    public bool CanSwitchTest
     {
-        get => SelectedDay?.Data?.TestInput != null;
+        get => _canSwitchTest;
+        set
+        {
+            _canSwitchTest = value;
+            OnPropertyChanged(nameof(CanSwitchTest));
+        }
     }
 
     private string _cookie;
@@ -169,7 +180,8 @@ public class MainViewModel : ViewModelBase
         if (_selectedDay != null)
         {
             _selectedDay.Log.UpdateMessage -= LogUpdated;
-                _selectedDay.UpdateVisuals -= VisualizationOnUpdateVisuals;
+            _selectedDay.UpdateVisuals -= VisualizationOnUpdateVisuals;
+            _selectedDay.CompleteRun -= SelectedDayOnCompleteRun;
         }
 
         _selectedDay = newDay;
@@ -192,7 +204,11 @@ public class MainViewModel : ViewModelBase
             else
                 SelectedPart = null;
             CanRun = true;
+            
+            _selectedDay.CompleteRun += SelectedDayOnCompleteRun;
+
         }
+
 
         UpdateVisualization();
         UpdateLog();
@@ -204,10 +220,15 @@ public class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(CanRunTest));
     }
 
+    private void SelectedDayOnCompleteRun()
+    {
+        CanSwitchTest = true;
+    }
+
     private void VisualizationOnUpdateVisuals()
     {
         OnPropertyChanged(nameof(WriteableBitmap));
-        WiggleThickness = new Thickness(_wiggleState ? 1 : 0, _wiggleState ? 0:1);
+        WiggleThickness = new Thickness(_wiggleState ? 1 : 0, _wiggleState ? 0 : 1);
         _wiggleState = !_wiggleState;
     }
 
@@ -229,7 +250,7 @@ public class MainViewModel : ViewModelBase
     {
         if (_selectedDay == null)
             return;
-        
+
         _selectedDay.UpdateVisuals += VisualizationOnUpdateVisuals;
     }
 
@@ -240,9 +261,12 @@ public class MainViewModel : ViewModelBase
         SelectedDay = Days.Last();
     }
 
+    private readonly object _lockObj = new();
     private void LogUpdated(LogMessage message)
     {
+        
         Log?.Add(message);
+        
         _scrollTarget = message;
         if (_isWaitingForScrollDelay)
             return;
@@ -252,7 +276,7 @@ public class MainViewModel : ViewModelBase
 
     private async Task Wait()
     {
-        await Task.Delay(TimeSpan.FromMilliseconds(1));
+        await Task.Delay(TimeSpan.FromMilliseconds(2));
         SelectedLogItem = _scrollTarget;
         _isWaitingForScrollDelay = false;
     }
@@ -275,6 +299,7 @@ public class MainViewModel : ViewModelBase
 
     private async Task Run(bool isTest)
     {
+        CanSwitchTest = false;
         Log?.Clear();
         if (SelectedPart == -1)
             _selectedDay?.Log.Log("No parts implemented!");
