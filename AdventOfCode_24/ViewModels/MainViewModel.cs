@@ -8,7 +8,6 @@ using AdventOfCode_24.Model.Logging;
 using System.Collections.ObjectModel;
 using Avalonia;
 using Avalonia.Media.Imaging;
-using System.Threading;
 using System.Collections.Concurrent;
 
 namespace AdventOfCode_24.ViewModels;
@@ -31,12 +30,9 @@ public class MainViewModel : ViewModelBase
     }
 
     private bool _isWaitingForScrollDelay;
-    private LogMessage? _scrollTarget;
 
     public List<int> Years { get; }
-
     private int _selectedYear;
-
     public int SelectedYear
     {
         get => _selectedYear;
@@ -83,7 +79,7 @@ public class MainViewModel : ViewModelBase
     }
 
     private ConcurrentBag<LogMessage> _messageCache = [];
-    public ObservableCollection<LogMessage>? Log = [];
+    public ObservableCollection<LogMessage>? Log { get; } = [];
 
     private LogMessage? _selectedLogItem;
 
@@ -187,7 +183,7 @@ public class MainViewModel : ViewModelBase
         }
 
         _selectedDay = newDay;
-        
+
 
         if (_selectedDay != null)
         {
@@ -196,16 +192,16 @@ public class MainViewModel : ViewModelBase
             {
                 return;
             }
+
             OnPropertyChanged(nameof(Parts));
 
             if (Parts != null)
-                _selectedPart = Parts[Parts.Count-1];
+                _selectedPart = Parts[Parts.Count - 1];
             else
-               _selectedPart = null;
+                _selectedPart = null;
             CanRun = true;
-            
-            _selectedDay.CompleteRun += SelectedDayOnCompleteRun;
 
+            _selectedDay.CompleteRun += SelectedDayOnCompleteRun;
         }
 
         SelectedPart = _selectedPart;
@@ -214,9 +210,9 @@ public class MainViewModel : ViewModelBase
         UpdateLog();
 
         OnPropertyChanged(nameof(SelectedDay));
+        OnPropertyChanged(nameof(CanRunTest));
         OnPropertyChanged(nameof(TestData));
         OnPropertyChanged(nameof(TestResult));
-        OnPropertyChanged(nameof(CanRunTest));
     }
 
     private void SelectedDayOnCompleteRun()
@@ -264,27 +260,25 @@ public class MainViewModel : ViewModelBase
     private void LogUpdated(LogMessage message)
     {
         _messageCache.Add(message);
-
-        if (_messageCache.Count > 20 || !_isWaitingForScrollDelay)
-        {
-            Log?.AddRange(_messageCache);
-            _messageCache.Clear();
-        }
-
-
-        _scrollTarget = message;
         if (_isWaitingForScrollDelay)
             return;
 
         _isWaitingForScrollDelay = true;
-        Wait();
+        WaitToUpdate();
     }
 
-    private async Task Wait()
+    private void CacheToLog()
+    {
+        Log?.AddRange(_messageCache.Reverse());
+        _messageCache.Clear();
+        SelectedLogItem = Log?.Last();
+    }
+
+    private async Task WaitToUpdate()
     {
         await Task.Delay(TimeSpan.FromMilliseconds(10));
-        SelectedLogItem = _scrollTarget;
         _isWaitingForScrollDelay = false;
+        CacheToLog();
     }
 
     public void Run()
@@ -313,17 +307,20 @@ public class MainViewModel : ViewModelBase
             CanSwitchTest = true;
             return;
         }
+
         if (_selectedDay == null)
         {
             CanSwitchTest = true;
             return;
         }
+
         await _selectedDay.Load();
         if (SelectedPart == null)
         {
             CanSwitchTest = true;
             return;
         }
+
         _selectedDay.Run(SelectedPart.Value, isTest);
     }
 

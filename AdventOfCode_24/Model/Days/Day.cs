@@ -78,6 +78,7 @@ public abstract class Day : IDay, IComparable<IDay>
         if (Data == null)
         {
             Log.Error("No data! Can not run Day!");
+            IsRunning = false;
             return;
         }
         
@@ -100,6 +101,10 @@ public abstract class Day : IDay, IComparable<IDay>
             Log.Error(ex.Message);
             if (ex.StackTrace != null)
                 Log.Error(ex.StackTrace);
+        }
+        finally
+        {
+            IsRunning = false;
         }
 
         var end = DateAndTime.Now;
