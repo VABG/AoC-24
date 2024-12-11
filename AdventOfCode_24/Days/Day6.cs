@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
 using System.Threading;
 using AdventOfCode_24.Model.Days;
 using AdventOfCode_24.Model.Visualization;
@@ -33,42 +35,60 @@ public class Day6 : Day
     }
 
 
+    struct P2(int x, int y)
+    {
+        public int X { get; } = x;
+        public int Y { get; } = y;
+    }
+
     private string Part2()
     {
         var lvl = new Level(Input);
         int loops = 0;
         Log.Log("Looking for loops...");
+        List<P2> visited = [];
         while (lvl.GuardInBounds())
         {
             lvl.MoveGuard();
-            if (lvl.IsLoop)
-                break;
+            if (lvl.GuardInBounds())
+                visited.Add(new P2(lvl.Guard.XPos, lvl.Guard.YPos));
         }
-        var visisted = lvl.GetVisited();
-
-        foreach(var p in visisted)
+        CreateRenderer(lvl.Width, lvl.Height);
+        visited = visited.Distinct().ToList();
+        int count = 0;
+        foreach (var p in visited)
         {
             if (LookForLoop(p.X, p.Y, lvl))
                 loops++;
+            count++;
         }
         return loops.ToString();
     }
 
     private bool LookForLoop(int x, int y, Level lvl)
     {
+        lvl.Reset();
+
         lvl.Data[x, y].IsBox = true;
+        bool isLoop = false;
         while (lvl.GuardInBounds())
         {
             lvl.MoveGuard();
+            Renderer.DrawPixel(lvl.NewPixel);
             if (lvl.IsLoop)
             {
-                lvl.Data[x, y].IsBox = false;
-                return true;
+                isLoop = true;
+                Log.Log("Found loop with box at: " + x + ": " + y);
+                Render();
+                Renderer.Clear(Colors.Transparent);
+                break;
             }
         }
 
+
         lvl.Data[x, y].IsBox = false;
-        return false;
+
+        return isLoop;
     }
 
     private void DrawLevel(Level level)
@@ -90,13 +110,20 @@ public class Day6 : Day
         public bool Visited = false;
         public bool IsBox = false;
         public bool IsCorner = false;
+        public Direction CornerHitDirection = Direction.Up;
+
+        public void ResetPathedState()
+        {
+            Visited = false;
+            IsCorner = false;
+        }
     }
 
     class Level
     {
         public static Color VisitedColor { get; } = Colors.DarkGreen;
-        public static Color BoxColor{ get; }  = Colors.SaddleBrown;
-        public static Color Background { get; } = new Color(10, 255,0,0);
+        public static Color BoxColor { get; } = Colors.SaddleBrown;
+        public static Color Background { get; } = new Color(10, 255, 0, 0);
         public int Width { get; }
         public int Height { get; }
         public int GuardStartPosX;
@@ -128,18 +155,18 @@ public class Day6 : Day
             Width = input[0].Length;
             Height = input.Length;
 
-            Data = new DataPoint[Height, Width];
-            for (int y= 0; y < Height; y++)
+            Data = new DataPoint[Width, Height];
+            for (int y = 0; y < Height; y++)
             {
                 for (int x = 0; x < Width; x++)
                 {
                     var c = input[y][x];
-                    var pixel = ColorAndPositionToPixel(c, x,y);
+                    var pixel = ColorAndPositionToPixel(c, x, y);
                     if (pixel.Color == VisitedColor)
                     {
                         Guard = new Guard(x, y, CharToDir(c));
                     }
-                    Data[y, x] = new DataPoint(pixel);
+                    Data[x, y] = new DataPoint(pixel);
                 }
             }
         }
@@ -156,22 +183,27 @@ public class Day6 : Day
 
         public void MoveGuard()
         {
-            Data[Guard.XPos, Guard.YPos].Visited = true;         
+            Data[Guard.XPos, Guard.YPos].Visited = true;
+            Data[Guard.XPos, Guard.YPos].Pixel.Color = NewPixel.Color;
 
             Guard.GetOneForward(out var x, out var y);
-            
-            if (InBounds(x,y) && Data[y,x].IsBox)
+
+            if (InBounds(x, y) && Data[x, y].IsBox)
             {
-                Guard.RotateRight();
-                if (InBounds(Guard.XPos, Guard.YPos))
-                { 
-                    NewPixel = new Pixel(Guard.XPos, Guard.YPos,Colors.Yellow);
-                    if (Data[Guard.XPos, Guard.YPos].IsCorner)
-                    {
-                        IsLoop = true;
-                    }
-                    Data[Guard.XPos, Guard.YPos].IsCorner = true;
+                if (Data[Guard.XPos, Guard.YPos].IsCorner && Data[Guard.XPos, Guard.YPos].CornerHitDirection == Guard.Facing)
+                {
+                    IsLoop = true;
+                    return;
                 }
+                if (!Data[Guard.XPos, Guard.YPos].IsCorner)
+                {
+                    Data[Guard.XPos, Guard.YPos].IsCorner = true;
+                    Data[Guard.XPos, Guard.YPos].CornerHitDirection = Guard.Facing;
+                }
+
+                Guard.RotateRight();
+
+                NewPixel = new Pixel(Guard.XPos, Guard.YPos, Colors.Yellow);
             }
             else
             {
@@ -179,8 +211,6 @@ public class Day6 : Day
                 if (InBounds(x, y))
                 {
                     NewPixel = new Pixel(x, y, Data[x, y].Pixel.Mix(VisitedColor, 0.75f));
-                    if (DrawOnData)
-                        Data[x, y].Pixel.Color = NewPixel.Color;
                 }
             }
         }
@@ -212,10 +242,25 @@ public class Day6 : Day
             List<Pixel> visisted = [];
             for (var y = 0; y < Height; y++)
                 for (var x = 0; x < Width; x++)
-                    if (Data[y, x].Visited)
-                        visisted.Add(Data[x,y].Pixel);
+                    if (Data[x, y].Visited)
+                        visisted.Add(Data[x, y].Pixel);
 
             return visisted;
+        }
+
+        public void Reset()
+        {
+            IsLoop = false;
+            Guard.Reset();
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    Data[x, y].ResetPathedState();
+                    if (!Data[x, y].IsBox)
+                        Data[x, y].Pixel.Color = Background;
+                }
+            }
         }
     }
 
@@ -233,10 +278,16 @@ public class Day6 : Day
         public int YPos { get; private set; } = yPos;
         public Direction Facing { get; private set; } = facing;
 
-        public int StartPosX { get; } = xPos;
-        public int StartPosY { get; } = xPos;
+        private int StartPosX { get; } = xPos;
+        private int StartPosY { get; } = yPos;
+        private Direction StartFacing { get; } = facing;
 
-        public Direction StartFacing { get; } = facing;
+        public void Reset()
+        {
+            XPos = StartPosX;
+            YPos = StartPosY;
+            Facing = StartFacing;
+        }
 
         public void Move()
         {
