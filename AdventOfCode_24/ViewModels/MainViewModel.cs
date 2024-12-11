@@ -75,13 +75,13 @@ public class MainViewModel : ViewModelBase
 
     private bool _canSwitchTest = true;
 
-    public bool CanSwitchTest
+    public bool CanChangeDay
     {
         get => _canSwitchTest;
         set
         {
             _canSwitchTest = value;
-            OnPropertyChanged(nameof(CanSwitchTest));
+            OnPropertyChanged(nameof(CanChangeDay));
         }
     }
 
@@ -151,7 +151,7 @@ public class MainViewModel : ViewModelBase
 
     private void SelectedDayOnCompleteRun()
     {
-        CanSwitchTest = true;
+        CanChangeDay = true;
     }
 
     private void ChangeYear()
@@ -179,25 +179,25 @@ public class MainViewModel : ViewModelBase
 
     private async Task Run(bool isTest)
     {
-        CanSwitchTest = false;
+        CanChangeDay = false;
         Log?.ClearLog();
         if (SelectedPart == -1)
         {
             _selectedDay?.Log.Log("No parts implemented!");
-            CanSwitchTest = true;
+            CanChangeDay = true;
             return;
         }
 
         if (_selectedDay == null)
         {
-            CanSwitchTest = true;
+            CanChangeDay = true;
             return;
         }
 
         await _selectedDay.Load();
         if (SelectedPart == null)
         {
-            CanSwitchTest = true;
+            CanChangeDay = true;
             return;
         }
 

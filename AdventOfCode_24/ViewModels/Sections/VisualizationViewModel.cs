@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
 using Avalonia;
 using AdventOfCode_24.Model.Days;
+using Avalonia.Media;
 
 namespace AdventOfCode_24.ViewModels.Sections
 {
@@ -9,22 +10,22 @@ namespace AdventOfCode_24.ViewModels.Sections
         public WriteableBitmap? WriteableBitmap => Day?.Renderer?.WriteableBitmap;
 
         private bool _wiggleState = true;
-        private Thickness _wiggleThickness;
+        private Color _background;
 
-        public Thickness WiggleThickness
+        public Color Background
         {
-            get => _wiggleThickness;
+            get => _background;
             set
             {
-                _wiggleThickness = value;
-                OnPropertyChanged(nameof(WiggleThickness));
+                _background = value;
+                OnPropertyChanged(nameof(Background));
             }
         }
 
         private void VisualizationOnUpdateVisuals()
         {
             OnPropertyChanged(nameof(WriteableBitmap));
-            WiggleThickness = new Thickness(0, _wiggleState ? 0 : 1);
+            Background = new Color(_wiggleState ? (byte)0 : (byte)1, 0, 0, 0);
             _wiggleState = !_wiggleState;
         }
 

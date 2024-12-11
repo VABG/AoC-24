@@ -37,6 +37,7 @@ namespace AdventOfCode_24.ViewModels.Sections
         {
             OnPropertyChanged(nameof(TestInput));
             OnPropertyChanged(nameof(CanRunTest));
+            OnPropertyChanged(nameof(TestResult));
         }
 
         protected override void UpdatePart(int? previous)
