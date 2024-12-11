@@ -1,36 +1,14 @@
-﻿using System;
-using AdventOfCode_24.Model.Days;
+﻿using AdventOfCode_24.Model.Days;
 using AdventOfCode_24.Model.WebConnection;
+using AdventOfCode_24.ViewModels.Sections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AdventOfCode_24.Model.Logging;
-using System.Collections.ObjectModel;
-using Avalonia;
-using Avalonia.Media.Imaging;
-using System.Collections.Concurrent;
 
 namespace AdventOfCode_24.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-    public WriteableBitmap? WriteableBitmap => _selectedDay?.Renderer?.WriteableBitmap;
-
-    private bool _wiggleState = true;
-    private Thickness _wiggleThickness;
-
-    public Thickness WiggleThickness
-    {
-        get => _wiggleThickness;
-        set
-        {
-            _wiggleThickness = value;
-            OnPropertyChanged(nameof(WiggleThickness));
-        }
-    }
-
-    private bool _isWaitingForScrollDelay;
-
     public List<int> Years { get; }
     private int _selectedYear;
     public int SelectedYear
@@ -73,23 +51,9 @@ public class MainViewModel : ViewModelBase
         set
         {
             _selectedPart = value;
-            OnPropertyChanged(nameof(TestResult));
+            foreach (var section in _viewSections)
+                section.SetPart(value);
             OnPropertyChanged(nameof(SelectedPart));
-        }
-    }
-
-    private ConcurrentBag<LogMessage> _messageCache = [];
-    public ObservableCollection<LogMessage>? Log { get; } = [];
-
-    private LogMessage? _selectedLogItem;
-
-    public LogMessage? SelectedLogItem
-    {
-        get => _selectedLogItem;
-        set
-        {
-            _selectedLogItem = value;
-            OnPropertyChanged(nameof(SelectedLogItem));
         }
     }
 
@@ -107,34 +71,7 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public string? TestData
-    {
-        get => SelectedDay?.Data?.TestInput;
-        set
-        {
-            if (SelectedDay != null && SelectedDay.Data != null)
-                SelectedDay.Data.TestInput = value;
-            OnPropertyChanged(nameof(TestData));
-            OnPropertyChanged(nameof(CanRunTest));
-        }
-    }
-
-    public string? TestResult
-    {
-        get => SelectedDay?.Data?.GetExpectedForPart(SelectedPart);
-        set
-        {
-            if (SelectedDay is { Data: not null })
-            {
-                SelectedDay.Data.SetExpectedForPart(_selectedPart, value);
-            }
-
-            OnPropertyChanged(nameof(TestResult));
-        }
-    }
-
-    public bool CanRunTest => (SelectedDay?.Data?.TestInput != null
-                               && !SelectedDay.IsRunning);
+    public bool CanRunTest { get => TestData.CanRunTest; }
 
     private bool _canSwitchTest = true;
 
@@ -148,25 +85,29 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private string _cookie;
+    public LogViewModel Log { get; }
+    public TestDataViewModel TestData { get; }
+    public VisualizationViewModel Visualization { get; }
+    private List<DayBaseViewModel> _viewSections;
 
-    public string Cookie
-    {
-        get => _cookie;
-        set
-        {
-            _cookie = value;
-            OnPropertyChanged(nameof(Cookie));
-        }
-    }
+    public CookieViewModel Cookie { get; }
 
     public MainViewModel()
     {
+        _viewSections = [];
+        Log = new();
+        _viewSections.Add(Log);
+        TestData = new();
+        _viewSections.Add(TestData);
+        Visualization = new();
+        _viewSections.Add(Visualization);
+
+        Cookie = new();
+        
         _daysReader = new DaysReader();
         Years = _daysReader.Days.Keys.ToList();
         SelectedYear = Years.Last();
         ChangeYear();
-        _cookie = CookieData.ActiveCookie;
         SelectedDay = Days?.Last();
     }
 
@@ -176,11 +117,7 @@ public class MainViewModel : ViewModelBase
         SelectedPart = null;
 
         if (_selectedDay != null)
-        {
-            _selectedDay.Log.UpdateMessage -= LogUpdated;
-            _selectedDay.UpdateVisuals -= VisualizationOnUpdateVisuals;
             _selectedDay.CompleteRun -= SelectedDayOnCompleteRun;
-        }
 
         _selectedDay = newDay;
 
@@ -205,14 +142,11 @@ public class MainViewModel : ViewModelBase
         }
 
         SelectedPart = _selectedPart;
-
-        UpdateVisualization();
-        UpdateLog();
+        foreach(var section in _viewSections)
+            section.SetDay(newDay);
 
         OnPropertyChanged(nameof(SelectedDay));
         OnPropertyChanged(nameof(CanRunTest));
-        OnPropertyChanged(nameof(TestData));
-        OnPropertyChanged(nameof(TestResult));
     }
 
     private void SelectedDayOnCompleteRun()
@@ -220,65 +154,11 @@ public class MainViewModel : ViewModelBase
         CanSwitchTest = true;
     }
 
-    private void VisualizationOnUpdateVisuals()
-    {
-        OnPropertyChanged(nameof(WriteableBitmap));
-        WiggleThickness = new Thickness(0, _wiggleState ? 0 : 1);
-        _wiggleState = !_wiggleState;
-    }
-
-    private void UpdateLog()
-    {
-        if (_selectedDay == null)
-            return;
-
-        _selectedDay.Log.UpdateMessage += LogUpdated;
-        SelectedLogItem = null;
-        _messageCache.Clear();
-        Log?.ReplaceCollection(_selectedDay.Log.Messages);
-        if (Log != null && Log.Count != 0)
-            SelectedLogItem = Log?.Last();
-        else
-            SelectedLogItem = null;
-    }
-
-    private void UpdateVisualization()
-    {
-        if (_selectedDay == null)
-            return;
-
-        _selectedDay.UpdateVisuals += VisualizationOnUpdateVisuals;
-    }
-
     private void ChangeYear()
     {
         OnPropertyChanged(nameof(SelectedYear));
         Days = _daysReader.Days[SelectedYear];
         SelectedDay = Days.Last();
-    }
-
-    private void LogUpdated(LogMessage message)
-    {
-        _messageCache.Add(message);
-        if (_isWaitingForScrollDelay)
-            return;
-
-        _isWaitingForScrollDelay = true;
-        WaitToUpdate();
-    }
-
-    private void CacheToLog()
-    {
-        Log?.AddRange(_messageCache.Reverse());
-        _messageCache.Clear();
-        SelectedLogItem = Log?.Last();
-    }
-
-    private async Task WaitToUpdate()
-    {
-        await Task.Delay(TimeSpan.FromMilliseconds(10));
-        _isWaitingForScrollDelay = false;
-        CacheToLog();
     }
 
     public void Run()
@@ -300,7 +180,7 @@ public class MainViewModel : ViewModelBase
     private async Task Run(bool isTest)
     {
         CanSwitchTest = false;
-        Log?.Clear();
+        Log?.ClearLog();
         if (SelectedPart == -1)
         {
             _selectedDay?.Log.Log("No parts implemented!");
@@ -322,15 +202,5 @@ public class MainViewModel : ViewModelBase
         }
 
         _selectedDay.Run(SelectedPart.Value, isTest);
-    }
-
-    public void SaveTestData()
-    {
-        SelectedDay?.WriteData();
-    }
-
-    public void SaveCookie()
-    {
-        CookieData.SetCookie(Cookie);
     }
 }
