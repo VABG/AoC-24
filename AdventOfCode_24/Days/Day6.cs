@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using AdventOfCode_24.Model.Days;
 using AdventOfCode_24.Model.Visualization;
+using Avalonia.Controls;
 using Avalonia.Media;
+using DynamicData.Kernel;
 
 namespace AdventOfCode_24.Days;
 
@@ -18,48 +21,68 @@ public class Day6 : Day
         CreateRenderer(lvl.Width, lvl.Height);
 
         Log.Log("Walking...");
-        const int skipTime = 5;
-        int skipCounter = skipTime;
+        Renderer.DrawPixels(lvl.GetPixels().ToArray());
         while (lvl.GuardInBounds())
         {
             lvl.MoveGuard();
-            if (skipCounter == skipTime)
-            {
-                DrawLevel(lvl);
-                skipCounter = 0;
-            }
-
-            skipCounter++;
+            DrawLevel(lvl);
+            Wait(0.001);
         }
-        DrawLevel(lvl);
-        
+
         return lvl.GetVisitedNr().ToString();
     }
 
     private void DrawLevel(Level level)
     {
-        Renderer.DrawPixels(level.Data);
+        Renderer.DrawPixel(level.NewPixel);
         Render();
+    }
+
+    class DataPoint
+    {
+        public DataPoint(Pixel pixel)
+        {
+            Pixel = pixel;
+            if (Pixel.Color == Level.BoxColor)
+                IsBox = true;
+        }
+
+        public Pixel Pixel;
+        public bool Visited = false;
+        public bool IsBox = false;
     }
 
     class Level
     {
-        public Color VisitedColor { get; } = Colors.DarkGreen;
-        public Color BoxColor{ get; }  = Colors.SaddleBrown;
-        public Color Background { get; } = new Color(10, 255,0,0);
+        public static Color VisitedColor { get; } = Colors.DarkGreen;
+        public static Color BoxColor{ get; }  = Colors.SaddleBrown;
+        public static Color Background { get; } = new Color(10, 255,0,0);
         public int Width { get; }
         public int Height { get; }
 
-        public Pixel[,] Data { get; private set; }
+        public DataPoint[,] Data { get; private set; }
         public Guard Guard { get; private set; }
+        public Pixel NewPixel { get; private set; }
 
+        public List<Pixel> GetPixels()
+        {
+            List<Pixel> pixels = [];
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    pixels.Add(Data[x, y].Pixel);
+                }
+            }
+            return pixels;
+        }
     
         public Level(string[] input)
         {
             Width = input[0].Length;
             Height = input.Length;
 
-            Data = new Pixel[Height, Width];
+            Data = new DataPoint[Height, Width];
             for (int y= 0; y < Height; y++)
             {
                 for (int x = 0; x < Width; x++)
@@ -68,7 +91,7 @@ public class Day6 : Day
                     var pixel = ColorAndPositionToPixel(c, x,y);
                     if (pixel.Color == VisitedColor)
                         Guard = new Guard(x, y, CharToDir(c));
-                    Data[y, x] = pixel;
+                    Data[y, x] = new DataPoint(pixel);
                 }
             }
         }
@@ -84,16 +107,24 @@ public class Day6 : Day
 
         public void MoveGuard()
         {
+            Data[Guard.XPos, Guard.YPos].Visited = true;         
+
             Guard.GetOneForward(out var x, out var y);
             
-            if (InBounds(x,y) && Data[y,x].Color == BoxColor)
+            if (InBounds(x,y) && Data[y,x].IsBox)
+            {
                 Guard.RotateRight();
+                if (InBounds(Guard.XPos, Guard.YPos))
+                    NewPixel = new Pixel(Guard.XPos, Guard.YPos,Colors.Yellow);
+            }
             else
             {
                 Guard.Move();
-
-                if (InBounds(x,y))
-                    Data[y, x] = new Pixel(x, y, VisitedColor);
+                if (InBounds(x, y))
+                {
+                    NewPixel = new Pixel(x, y, Data[x, y].Pixel.Mix(VisitedColor, 0.75f));
+                    Data[x, y].Pixel.Color = NewPixel.Color;
+                }
             }
         }
 
@@ -124,7 +155,7 @@ public class Day6 : Day
             var total = 0;
             for (var y = 0; y < Height; y++)
                 for (var x = 0; x < Width; x++)
-                    if (Data[y, x].Color == VisitedColor)
+                    if (Data[y, x].Visited)
                         total++;
 
             return total;

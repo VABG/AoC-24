@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using System.Diagnostics;
 
 namespace AdventOfCode_24.Model.Days;
 
@@ -203,5 +204,16 @@ public abstract class Day : IDay, IComparable<IDay>
     {
         if (Data != null)
             InputReader.WriteXml(Data, Year, DayNumber);
+    }
+
+    protected void Wait(double durationSeconds)
+    {
+        var durationTicks = Math.Round(durationSeconds * Stopwatch.Frequency);
+        var sw = Stopwatch.StartNew();
+
+        while (sw.ElapsedTicks < durationTicks)
+        {
+
+        }
     }
 }
