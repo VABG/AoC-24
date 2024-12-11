@@ -29,7 +29,46 @@ public class Day6 : Day
             Wait(0.001);
         }
 
-        return lvl.GetVisitedNr().ToString();
+        return lvl.GetVisited().Count.ToString();
+    }
+
+
+    private string Part2()
+    {
+        var lvl = new Level(Input);
+        int loops = 0;
+        Log.Log("Looking for loops...");
+        while (lvl.GuardInBounds())
+        {
+            lvl.MoveGuard();
+            if (lvl.IsLoop)
+                break;
+        }
+        var visisted = lvl.GetVisited();
+
+        foreach(var p in visisted)
+        {
+            if (LookForLoop(p.X, p.Y, lvl))
+                loops++;
+        }
+        return loops.ToString();
+    }
+
+    private bool LookForLoop(int x, int y, Level lvl)
+    {
+        lvl.Data[x, y].IsBox = true;
+        while (lvl.GuardInBounds())
+        {
+            lvl.MoveGuard();
+            if (lvl.IsLoop)
+            {
+                lvl.Data[x, y].IsBox = false;
+                return true;
+            }
+        }
+
+        lvl.Data[x, y].IsBox = false;
+        return false;
     }
 
     private void DrawLevel(Level level)
@@ -50,6 +89,7 @@ public class Day6 : Day
         public Pixel Pixel;
         public bool Visited = false;
         public bool IsBox = false;
+        public bool IsCorner = false;
     }
 
     class Level
@@ -59,6 +99,8 @@ public class Day6 : Day
         public static Color Background { get; } = new Color(10, 255,0,0);
         public int Width { get; }
         public int Height { get; }
+        public int GuardStartPosX;
+        public int GuardStartPosY;
 
         public DataPoint[,] Data { get; private set; }
         public Guard Guard { get; private set; }
@@ -76,7 +118,11 @@ public class Day6 : Day
             }
             return pixels;
         }
-    
+
+        public bool IsLoop { get; private set; }
+
+        public bool DrawOnData = true;
+
         public Level(string[] input)
         {
             Width = input[0].Length;
@@ -90,11 +136,14 @@ public class Day6 : Day
                     var c = input[y][x];
                     var pixel = ColorAndPositionToPixel(c, x,y);
                     if (pixel.Color == VisitedColor)
+                    {
                         Guard = new Guard(x, y, CharToDir(c));
+                    }
                     Data[y, x] = new DataPoint(pixel);
                 }
             }
         }
+
         public bool GuardInBounds()
         {
             return InBounds(Guard.XPos, Guard.YPos);
@@ -115,7 +164,14 @@ public class Day6 : Day
             {
                 Guard.RotateRight();
                 if (InBounds(Guard.XPos, Guard.YPos))
+                { 
                     NewPixel = new Pixel(Guard.XPos, Guard.YPos,Colors.Yellow);
+                    if (Data[Guard.XPos, Guard.YPos].IsCorner)
+                    {
+                        IsLoop = true;
+                    }
+                    Data[Guard.XPos, Guard.YPos].IsCorner = true;
+                }
             }
             else
             {
@@ -123,7 +179,8 @@ public class Day6 : Day
                 if (InBounds(x, y))
                 {
                     NewPixel = new Pixel(x, y, Data[x, y].Pixel.Mix(VisitedColor, 0.75f));
-                    Data[x, y].Pixel.Color = NewPixel.Color;
+                    if (DrawOnData)
+                        Data[x, y].Pixel.Color = NewPixel.Color;
                 }
             }
         }
@@ -150,15 +207,15 @@ public class Day6 : Day
             };
         }
 
-        public int GetVisitedNr()
+        public List<Pixel> GetVisited()
         {
-            var total = 0;
+            List<Pixel> visisted = [];
             for (var y = 0; y < Height; y++)
                 for (var x = 0; x < Width; x++)
                     if (Data[y, x].Visited)
-                        total++;
+                        visisted.Add(Data[x,y].Pixel);
 
-            return total;
+            return visisted;
         }
     }
 
@@ -175,6 +232,12 @@ public class Day6 : Day
         public int XPos { get; private set; } = xPos;
         public int YPos { get; private set; } = yPos;
         public Direction Facing { get; private set; } = facing;
+
+        public int StartPosX { get; } = xPos;
+        public int StartPosY { get; } = xPos;
+
+        public Direction StartFacing { get; } = facing;
+
         public void Move()
         {
             GetOneForward(out var x, out var y);

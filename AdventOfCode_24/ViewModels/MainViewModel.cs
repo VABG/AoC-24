@@ -152,6 +152,7 @@ public class MainViewModel : ViewModelBase
     private void SelectedDayOnCompleteRun()
     {
         CanChangeDay = true;
+        CanRun = true;
     }
 
     private void ChangeYear()
@@ -179,18 +180,21 @@ public class MainViewModel : ViewModelBase
 
     private async Task Run(bool isTest)
     {
+        CanRun = false;
         CanChangeDay = false;
         Log?.ClearLog();
         if (SelectedPart == -1)
         {
             _selectedDay?.Log.Log("No parts implemented!");
             CanChangeDay = true;
+            CanRun = true;
             return;
         }
 
         if (_selectedDay == null)
         {
             CanChangeDay = true;
+            CanRun = true;
             return;
         }
 
@@ -198,6 +202,7 @@ public class MainViewModel : ViewModelBase
         if (SelectedPart == null)
         {
             CanChangeDay = true;
+            CanRun = true;
             return;
         }
 
