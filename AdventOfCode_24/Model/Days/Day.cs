@@ -174,7 +174,7 @@ public abstract class Day : IDay, IComparable<IDay>
         Renderer = new PixelRenderer(width, height);
     }
 
-    protected void Render()
+    public void Render()
     {
         if (Renderer != null)
             UpdateVisuals();
@@ -206,7 +206,7 @@ public abstract class Day : IDay, IComparable<IDay>
             InputReader.WriteXml(Data, Year, DayNumber);
     }
 
-    protected void Wait(double durationSeconds)
+    public void Wait(double durationSeconds)
     {
         var durationTicks = Math.Round(durationSeconds * Stopwatch.Frequency);
         var sw = Stopwatch.StartNew();
