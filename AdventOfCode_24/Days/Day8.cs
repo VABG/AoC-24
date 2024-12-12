@@ -23,6 +23,18 @@ namespace AdventOfCode_24.Days
             return total.ToString();
         }
 
+
+        private string Part2()
+        {
+            var lvl = new Level(Input, this);
+            CreateRenderer(lvl.Width, lvl.Height);
+            lvl.SetRenderer(Renderer);
+            lvl.Draw();
+            lvl.Part2 = true;
+            var total = lvl.CalculateResonance();
+            return total.ToString();
+        }
+
         private class Point
         {
             public char C;
@@ -48,6 +60,7 @@ namespace AdventOfCode_24.Days
             private byte[] randomBytesR;
             private byte[] randomBytesG;
             private byte[] randomBytesB;
+            public bool Part2 = false;
 
             private PixelRenderer? _renderer;
             private Day _d;
@@ -133,11 +146,16 @@ namespace AdventOfCode_24.Days
                     for (int i = 0; i < points.Count; i++)
                         for (int j = i+1; j < points.Count; j++)
                         {
-                            var o1 = points[i].Opposite(points[j]);
-                            var o2 = points[j].Opposite(points[i]);
+                            if (!Part2)
+                            {
+                                var o1 = points[i].Opposite(points[j]);
+                                var o2 = points[j].Opposite(points[i]);
 
-                            UpdatePoint(o1);
-                            UpdatePoint(o2);
+                                UpdatePoint(o1);
+                                UpdatePoint(o2);
+                            }
+                            else 
+                                DrawLines(points[i], points[j]);
                         }
                 }
 
@@ -156,7 +174,7 @@ namespace AdventOfCode_24.Days
                 
                 _data[p.x, p.y].hasResonance = true;
                 _renderer?.DrawPixel(new Pixel(p.x, p.y, Colors.Red));
-                _d.Wait(0.01);
+                _d.Wait(0.003);
                 _d.Render();
             }
 
@@ -174,6 +192,46 @@ namespace AdventOfCode_24.Days
             {
                 return new Color(byte.MaxValue, randomBytesR[c], randomBytesG[c], randomBytesB[c]);
             }
+
+            private void DrawLines(P2 p1, P2 p2)
+            {
+                var offset = new P2(p2.x - p1.x, p2.y - p1.y);
+                var gcd = GCD(Math.Abs(offset.x), Math.Abs(offset.y));
+                if (gcd > 1)
+                    offset = new P2(offset.x / gcd, offset.y / gcd);
+
+
+                P2 currentPoint = p1;
+                // Do steps in both directions (inverse offset)
+                while(InLevel(currentPoint))
+                {
+                    UpdatePoint(currentPoint);
+                    currentPoint = new P2(currentPoint.x + offset.x, currentPoint.y + offset.y);
+                }
+
+                offset = new P2(-offset.x, -offset.y);
+                currentPoint = p1;
+                while (InLevel(currentPoint))
+                {
+                    UpdatePoint(currentPoint);
+                    currentPoint = new P2(currentPoint.x + offset.x, currentPoint.y + offset.y);
+                }
+
+            }
+
+            private static int GCD(int a, int b)
+            {
+                while (a != 0 && b != 0)
+                {
+                    if (a > b)
+                        a %= b;
+                    else
+                        b %= a;
+                }
+
+                return a | b;
+            }
         }
+
     }
 }
