@@ -25,7 +25,7 @@ public abstract class Day : IDay, IComparable<IDay>
 
     private readonly BackgroundWorker _worker;
     private int _partToRun;
-    private bool _isTest;
+    protected bool IsTest;
     public bool IsRunning { get; private set; }
 
     private Dictionary<int, Func<string>> Parts { get; set; } = [];
@@ -66,14 +66,14 @@ public abstract class Day : IDay, IComparable<IDay>
     public void Run(int part, bool isTest)
     {
         _partToRun = part;
-        _isTest = isTest;
+        IsTest = isTest;
         _worker.RunWorkerAsync();
     }
 
     private void Run()
     {
         IsRunning = true;
-        var isTest = _isTest;
+        var isTest = IsTest;
         var part = _partToRun;
         
         if (Data == null)
