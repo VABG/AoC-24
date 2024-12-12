@@ -27,8 +27,8 @@ public class Day6 : Day
         while (lvl.GuardInBounds())
         {
             lvl.MoveGuard();
+            Wait(IsTest ? 0.1 : 0.001);
             DrawLevel(lvl);
-            Wait(0.001);
         }
 
         return lvl.GetVisited().Count.ToString();
@@ -58,8 +58,15 @@ public class Day6 : Day
         int count = 0;
         foreach (var p in visited)
         {
+            Renderer.Clear(Colors.Transparent);
+
+            if (IsTest)
+                Renderer.DrawPixels(lvl.GetPixels().ToArray());
             if (LookForLoop(p.X, p.Y, lvl))
                 loops++;
+            
+            Render();
+            Wait(IsTest ? 0.1 : 0.001);
             count++;
         }
         return loops.ToString();
@@ -79,13 +86,17 @@ public class Day6 : Day
             {
                 isLoop = true;
                 Log.Log("Found loop with box at: " + x + ": " + y);
-                Render();
-                Renderer.Clear(Colors.Transparent);
+
+                if (IsTest)
+                    Wait(0.25);
                 break;
             }
+            if (IsTest)
+            {
+                Render();
+                Wait(0.001);
+            }
         }
-
-
         lvl.Data[x, y].IsBox = false;
 
         return isLoop;
