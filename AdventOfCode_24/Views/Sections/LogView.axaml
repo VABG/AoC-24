@@ -6,7 +6,8 @@
              xmlns:converters="clr-namespace:Avalonia.Markup.Xaml.Converters;assembly=Avalonia.Markup.Xaml"
              xmlns:vm="clr-namespace:AdventOfCode_24.ViewModels.Sections"
              x:DataType="vm:LogViewModel"
-             x:Class="AdventOfCode_24.Views.Sections.LogView">
+             x:Class="AdventOfCode_24.Views.Sections.LogView"
+  x:Name="ViewControl">
   <Design.DataContext>
     <vm:LogViewModel/>
   </Design.DataContext>
