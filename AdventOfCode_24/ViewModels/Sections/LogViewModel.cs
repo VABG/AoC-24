@@ -14,7 +14,7 @@ public class LogViewModel : DayBaseViewModel
     private bool _isWaitingForScrollDelay;
 
     private ConcurrentBag<LogMessage> _messageCache = [];
-    public ObservableCollection<LogMessage>? Log { get; } = [];
+    public ObservableCollection<LogMessage> Log { get; } = [];
 
     private LogMessage? _selectedLogItem;
 
@@ -35,15 +35,24 @@ public class LogViewModel : DayBaseViewModel
         SelectedLogItem = null;
 
         if (Day == null)
+        {
+            SelectedLogItem = null;
+            Log.Clear();
+            _messageCache.Clear();
             return;
+        }
 
         Day.Log.UpdateMessage += LogUpdated;
         _messageCache.Clear();
-        Log?.ReplaceCollection(Day.Log.Messages);
+        if (Day.Log.Messages.Count > 0)
+            Log.ReplaceCollection(Day.Log.Messages);
+        else 
+            Log.Clear();
         if (Log != null && Log.Count != 0)
-            SelectedLogItem = Log?.Last();
+            SelectedLogItem = Log.Last();
         else
             SelectedLogItem = null;
+        OnPropertyChanged(nameof(Log));
     }
 
     protected override void UpdatePart(int? previous)

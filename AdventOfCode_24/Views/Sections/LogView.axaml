@@ -20,7 +20,7 @@
               AutoScrollToSelectedItem="True"
               ScrollViewer.VerticalScrollBarVisibility="Auto"
               ScrollViewer.IsScrollInertiaEnabled="False"
-              ScrollViewer.IsDeferredScrollingEnabled="True"
+              ScrollViewer.IsDeferredScrollingEnabled="False"
               ScrollViewer.HorizontalScrollBarVisibility="Auto"
               Background="#C3030900">
       <ListBox.ItemTemplate>
