@@ -71,7 +71,8 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public bool CanRunTest { get => TestData.CanRunTest; }
+    public bool CanRunTest => SelectedDay?.Data?.TestInput != null
+                   && !SelectedDay.IsRunning;
 
     private bool _canSwitchTest = true;
 
@@ -97,7 +98,7 @@ public class MainViewModel : ViewModelBase
         _viewSections = [];
         Log = new();
         _viewSections.Add(Log);
-        TestData = new();
+        TestData = new(this);
         _viewSections.Add(TestData);
         Visualization = new();
         _viewSections.Add(Visualization);

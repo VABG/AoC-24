@@ -4,8 +4,7 @@ namespace AdventOfCode_24.ViewModels.Sections
 {
     public class TestDataViewModel : DayBaseViewModel
     {
-        public bool CanRunTest => Day?.Data?.TestInput != null
-                       && !Day.IsRunning;
+        private readonly MainViewModel _parent;
 
         public string? TestInput
         {
@@ -14,8 +13,9 @@ namespace AdventOfCode_24.ViewModels.Sections
             {
                 if (Day != null && Day.Data != null)
                     Day.Data.TestInput = value;
+
+                _parent.OnPropertyChanged(nameof(_parent.CanRunTest));
                 OnPropertyChanged(nameof(TestInput));
-                OnPropertyChanged(nameof(CanRunTest));
             }
         }
 
@@ -33,10 +33,14 @@ namespace AdventOfCode_24.ViewModels.Sections
             }
         }
 
+        public TestDataViewModel(MainViewModel parent)
+        {
+            this._parent = parent;
+        }
+
         protected override void UpdateDay(Day? previous)
         {
             OnPropertyChanged(nameof(TestInput));
-            OnPropertyChanged(nameof(CanRunTest));
             OnPropertyChanged(nameof(TestResult));
         }
 
