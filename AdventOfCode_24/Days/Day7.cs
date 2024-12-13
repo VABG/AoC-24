@@ -128,7 +128,7 @@ namespace AdventOfCode_24.Days
             int counter = 0;
             while (true)
             {
-                BitArray ba = new BitArray(new int[counter]);
+                BitArray ba = new BitArray(new int[]{counter});
 
                 long total = numbers[0];
                 for (int i = 0; i < operators; i++)

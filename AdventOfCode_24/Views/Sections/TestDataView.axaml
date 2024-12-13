@@ -4,11 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AdventOfCode_24.Views.Sections.TestDataView">
+  <UserControl.Styles>
+    <Style Selector="TextBox">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontFamily" Value="Lucida Console" />
+    </Style>
+  </UserControl.Styles>
   <Menu>
     <MenuItem Header="Test Data" IsEnabled="{Binding CanRun}" Background="#252525" Margin="2,2,2,2">
       <StackPanel Width="300">
         <Label Content="Data:" />
-        <TextBox Text="{Binding TestInput}" Height="300" TextWrapping="Wrap" AcceptsReturn="True"
+        <TextBox Text="{Binding TestInput}" 
+                 Height="300" 
+                 TextWrapping="Wrap" AcceptsReturn="True"
                  ScrollViewer.VerticalScrollBarVisibility="Auto" />
         <Label Content="Expected Result:" />
         <TextBox Text="{Binding TestResult}" />
