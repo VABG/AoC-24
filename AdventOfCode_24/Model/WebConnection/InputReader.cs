@@ -2,10 +2,12 @@ using AdventOfCode_24.Model.Days;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using HtmlAgilityPack;
 
 namespace AdventOfCode_24.Model.WebConnection;
 
@@ -13,20 +15,42 @@ public class InputReader
 {
     private const string FilePath = @"C:/AoC/";
 
-    public static async Task<DayData> Read(IDay day)
+    public static async Task<DayData> ReadDayData(IDay day)
     {
         var path = FilePath + day.Year + "_" + day.DayNumber + ".xml";
         if (!Directory.Exists(FilePath))
             Directory.CreateDirectory(FilePath);
         if (!File.Exists(path))
         {
-            var lines = await Read(day.Year, day.DayNumber);
+            var lines = await ReadInput(day.Year, day.DayNumber);
             var data = new DayData(lines);
             WriteXml(data, path);
             return data;
         }
 
         return ReadXml(path);
+    }
+
+    public static async Task<string> ReadDayDescription(IDay day)
+    {
+        try
+        {
+            var page = await ReadAoCPage($"{day.Year}/day/{day.DayNumber}");
+            // HtmlDocument doc = new HtmlDocument();
+            // doc.Load(page);
+            // var htmlDescriptions =
+            //     doc.DocumentNode.Descendants("article").Where(c => c.GetClasses().Contains("day-desc"));
+            //
+            // string descriptions = string.Empty;
+            // foreach (var d in htmlDescriptions)
+            //     descriptions += d.OuterHtml;
+
+            return page;
+        }
+        catch(Exception ex)
+        {
+            return ex.Message;
+        }
     }
 
     public static void WriteXml(DayData dayData, int year, int day)
@@ -52,12 +76,12 @@ public class InputReader
         return dayData;
     }
 
-    private static async Task<string> Read(int year, int day)
+    private static async Task<string> ReadInput(int year, int day)
     {
-        return await ReadFromWeb(year, day);
+        return await ReadAoCPage($"{year}/day/{day}/input");
     }
-
-    private static async Task<string> ReadFromWeb(int year, int day)
+    
+    private static async Task<string> ReadAoCPage(string page)
     {
         var cookie = CookieData.ActiveCookie;
         if (string.IsNullOrEmpty(cookie))
@@ -72,7 +96,7 @@ public class InputReader
         client.BaseAddress = uri;
         cookies.Add(uri, new Cookie("session", cookie));
 
-        var response = await client.GetAsync($"{year}/day/{day}/input");
+        var response = await client.GetAsync(page);
         var stream = await response.Content.ReadAsStreamAsync();
 
         StreamReader sr = new StreamReader(stream);

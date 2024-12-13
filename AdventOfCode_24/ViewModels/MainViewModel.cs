@@ -89,6 +89,7 @@ public class MainViewModel : ViewModelBase
     public LogViewModel Log { get; }
     public TestDataViewModel TestData { get; }
     public VisualizationViewModel Visualization { get; }
+    public DescriptionViewModel Description { get; }
     private List<DayBaseViewModel> _viewSections;
 
     public CookieViewModel Cookie { get; }
@@ -96,14 +97,16 @@ public class MainViewModel : ViewModelBase
     public MainViewModel()
     {
         _viewSections = [];
-        Log = new();
+        Log = new LogViewModel();
         _viewSections.Add(Log);
-        TestData = new(this);
+        TestData = new TestDataViewModel(this);
         _viewSections.Add(TestData);
-        Visualization = new();
+        Visualization = new VisualizationViewModel();
         _viewSections.Add(Visualization);
+        Description = new DescriptionViewModel();
+        _viewSections.Add(Description);
 
-        Cookie = new();
+        Cookie = new CookieViewModel();
         
         _daysReader = new DaysReader();
         Years = _daysReader.Days.Keys.ToList();

@@ -53,7 +53,7 @@ public abstract class Day : IDay, IComparable<IDay>
 
         try
         {
-            Data = await InputReader.Read(this);
+            Data = await InputReader.ReadDayData(this);
         }
         catch (Exception ex)
         {

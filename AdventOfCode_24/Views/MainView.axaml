@@ -59,6 +59,7 @@
 
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
         <ContentControl Content="{Binding Cookie}"/>
+        <ContentControl Content="{Binding Description}"/>
         <Button Content="Site" Command="{Binding OpenSite}" />
       </StackPanel>
     </Grid>

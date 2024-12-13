@@ -55,28 +55,28 @@ public class Day6 : Day
         }
         CreateRenderer(lvl.Width, lvl.Height);
         visited = visited.Distinct().ToList();
-        int count = 0;
+        Pixel[] boxPixels = lvl.GetBoxPixels();
+        
         foreach (var p in visited)
         {
-            Renderer.Clear(Colors.Transparent);
-
-            if (IsTest)
-                Renderer.DrawPixels(lvl.GetPixels().ToArray());
+            Render();
+            Renderer.Clear(Colors.Black);
+            Renderer.DrawPixels(boxPixels);
             if (LookForLoop(p.X, p.Y, lvl))
                 loops++;
             
-            Render();
-            Wait(IsTest ? 0.1 : 0.001);
-            count++;
+            Wait(IsTest ? 0.1 : 0.1);
         }
         return loops.ToString();
     }
-
+    
     private bool LookForLoop(int x, int y, Level lvl)
     {
         lvl.Reset();
 
         lvl.Data[x, y].IsBox = true;
+        lvl.Data[x, y].Pixel.Color = Colors.White;
+        Renderer.DrawPixel(lvl.Data[x,y].Pixel);
         bool isLoop = false;
         while (lvl.GuardInBounds())
         {
@@ -98,6 +98,7 @@ public class Day6 : Day
             }
         }
         lvl.Data[x, y].IsBox = false;
+        lvl.Data[x, y].Pixel.Color = Colors.Transparent;
 
         return isLoop;
     }
@@ -180,6 +181,18 @@ public class Day6 : Day
                     Data[x, y] = new DataPoint(pixel);
                 }
             }
+        }
+
+        public Pixel[] GetBoxPixels()
+        {
+            List<Pixel> pixels = [];
+
+            for (int y = 0; y < Height; y++)
+                for (int x = 0; x < Width; x++)
+                    if(Data[x,y].IsBox)
+                        pixels.Add(Data[x,y].Pixel);
+
+            return pixels.ToArray();
         }
 
         public bool GuardInBounds()
