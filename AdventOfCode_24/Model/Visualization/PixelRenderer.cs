@@ -22,11 +22,8 @@ public class PixelRenderer
     public void DrawPixels(Pixel[] pixels)
     {
         using var lockedFrameBuffer = WriteableBitmap.Lock();
-        unsafe
-        {
-            foreach (var pixel in pixels)
-                SafeDrawAt(pixel, lockedFrameBuffer);
-        }
+        foreach (var pixel in pixels)
+            SafeDrawAt(pixel, lockedFrameBuffer);
     }
 
     public void DrawPixels(Pixel[,] pixels2d)

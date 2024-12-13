@@ -1,5 +1,4 @@
 ﻿using Avalonia.Media;
-using System;
 
 namespace AdventOfCode_24.Model.Visualization
 {

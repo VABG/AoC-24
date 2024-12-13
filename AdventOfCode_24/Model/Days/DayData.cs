@@ -21,7 +21,7 @@ namespace AdventOfCode_24.Model.Days
             Input = input;
         }
 
-        public string Input { get; set; }
+        public string Input { get; set; } = string.Empty;
         public string? TestInput { get; set; }
         public List<TestResult> TestResults { get; set; } = [];
 

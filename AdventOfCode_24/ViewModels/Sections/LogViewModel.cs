@@ -48,7 +48,7 @@ public class LogViewModel : DayBaseViewModel
             Log.ReplaceCollection(Day.Log.Messages);
         else 
             Log.Clear();
-        if (Log != null && Log.Count != 0)
+        if (Log.Count != 0)
             SelectedLogItem = Log.Last();
         else
             SelectedLogItem = null;
@@ -63,7 +63,7 @@ public class LogViewModel : DayBaseViewModel
     public void ClearLog()
     {
         Day?.Log.Messages.Clear();
-        Log?.Clear();
+        Log.Clear();
     }
 
     private void LogUpdated(LogMessage message)
@@ -78,9 +78,10 @@ public class LogViewModel : DayBaseViewModel
 
     private void CacheToLog()
     {
-        Log?.AddRange(_messageCache.Reverse());
+        Log.AddRange(_messageCache.Reverse());
         _messageCache.Clear();
-        SelectedLogItem = Log?.Last();
+        if (Log.Count > 0)
+            SelectedLogItem = Log.Last();
     }
 
     private async Task WaitToUpdateLog()

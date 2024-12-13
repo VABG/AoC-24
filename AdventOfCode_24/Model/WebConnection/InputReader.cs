@@ -54,10 +54,10 @@ public class InputReader
 
     private static async Task<string> Read(int year, int day)
     {
-        return await ReadFromWeb(day);
+        return await ReadFromWeb(year, day);
     }
 
-    private static async Task<string> ReadFromWeb(int day)
+    private static async Task<string> ReadFromWeb(int year, int day)
     {
         var cookie = CookieData.ActiveCookie;
         if (string.IsNullOrEmpty(cookie))
@@ -72,7 +72,7 @@ public class InputReader
         client.BaseAddress = uri;
         cookies.Add(uri, new Cookie("session", cookie));
 
-        var response = await client.GetAsync($"2024/day/{day}/input");
+        var response = await client.GetAsync($"{year}/day/{day}/input");
         var stream = await response.Content.ReadAsStreamAsync();
 
         StreamReader sr = new StreamReader(stream);

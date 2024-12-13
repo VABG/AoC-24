@@ -4,7 +4,6 @@ namespace AdventOfCode_24.ViewModels.Sections
 {
     public class CookieViewModel : ViewModelBase
     {
-
         private string _cookie;
 
         public string Cookie

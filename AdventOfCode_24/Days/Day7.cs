@@ -1,10 +1,7 @@
 ﻿using AdventOfCode_24.Model.Days;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode_24.Days
 {
@@ -16,9 +13,8 @@ namespace AdventOfCode_24.Days
 
         private string Part1()
         {
-
             long total = 0;
-            foreach(var line in Input)
+            foreach (var line in Input)
             {
                 if (string.IsNullOrEmpty(line))
                     continue;
@@ -30,7 +26,6 @@ namespace AdventOfCode_24.Days
 
                 if (CanSolve(target, values))
                     total += target;
-
             }
 
 
@@ -39,7 +34,6 @@ namespace AdventOfCode_24.Days
 
         private string Part2()
         {
-
             int longest = 0;
             foreach (var line in Input)
             {
@@ -53,10 +47,10 @@ namespace AdventOfCode_24.Days
                     longest = strValues.Length;
             }
 
-            Dictionary<int, List<byte[]>> permutationDictionary = GetAllPermutations(longest-1);
+            Dictionary<int, List<byte[]>> permutationDictionary = GetAllPermutations(longest - 1);
 
             long total = 0;
-            foreach(var line in Input)
+            foreach (var line in Input)
             {
                 if (string.IsNullOrEmpty(line))
                     continue;
@@ -82,31 +76,31 @@ namespace AdventOfCode_24.Days
         private Dictionary<int, List<byte[]>> GetAllPermutations(int mostOperators)
         {
             Dictionary<int, List<byte[]>> permutationDictionary = [];
-            List<byte[]> previousPermutations = [[0],[1], [2]];
+            List<byte[]> previousPermutations = [[0], [1], [2]];
             permutationDictionary.Add(1, previousPermutations);
 
             for (int i = 2; i <= mostOperators; i++)
             {
                 List<byte[]> currentPermutations = [];
                 foreach (var p in previousPermutations)
-                    for(int j = 0; j < 3; j++)
+                    for (int j = 0; j < 3; j++)
                         currentPermutations.Add(p.Concat([(byte)j]).ToArray());
                 previousPermutations = currentPermutations;
                 permutationDictionary.Add(i, currentPermutations);
             }
+
             return permutationDictionary;
         }
 
         private bool CanSolve(long target, long[] numbers, List<byte[]> permutations)
         {
-
-            foreach(var p in permutations)
+            foreach (var p in permutations)
             {
                 long total = numbers[0];
                 for (int i = 0; i < p.Length; i++)
                 {
                     byte op = p[i];
-                    switch(op)
+                    switch (op)
                     {
                         case 0:
                             total += numbers[i + 1];
@@ -119,24 +113,22 @@ namespace AdventOfCode_24.Days
                             break;
                     }
                 }
+
                 if (total == target)
                     return true;
             }
+
             return false;
-
         }
-
-
-
 
         private bool CanSolve(long target, long[] numbers)
         {
             int operators = numbers.Length - 1;
 
             int counter = 0;
-            while(true)
+            while (true)
             {
-                BitArray ba = new BitArray([counter]);
+                BitArray ba = new BitArray(new int[counter]);
 
                 long total = numbers[0];
                 for (int i = 0; i < operators; i++)
@@ -145,12 +137,13 @@ namespace AdventOfCode_24.Days
                         total += numbers[i + 1];
                     else total *= numbers[i + 1];
                 }
+
                 if (total == target)
                     return true;
                 counter++;
 
                 // Stop when value is at max
-                if (ba[operators] == true) 
+                if (ba[operators] == true)
                     break;
             }
 

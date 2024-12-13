@@ -183,7 +183,7 @@ public class MainViewModel : ViewModelBase
     {
         CanRun = false;
         CanChangeDay = false;
-        Log?.ClearLog();
+        Log.ClearLog();
         if (SelectedPart == -1)
         {
             _selectedDay?.Log.Log("No parts implemented!");

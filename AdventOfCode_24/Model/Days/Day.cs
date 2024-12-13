@@ -8,7 +8,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
 using System.Diagnostics;
 
 namespace AdventOfCode_24.Model.Days;
@@ -36,7 +35,7 @@ public abstract class Day : IDay, IComparable<IDay>
     public delegate void RunComplete();
     public event RunComplete CompleteRun;
 
-    public Day()
+    protected Day()
     {
         _worker = new BackgroundWorker();
         _worker.DoWork += WorkerOnDoWork;

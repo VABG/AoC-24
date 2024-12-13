@@ -1,5 +1,4 @@
 ﻿using Avalonia.Media.Imaging;
-using Avalonia;
 using AdventOfCode_24.Model.Days;
 using Avalonia.Media;
 
