@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using HtmlAgilityPack;
+using DynamicData;
 
 namespace AdventOfCode_24.Model.WebConnection;
 
@@ -31,21 +32,29 @@ public class InputReader
         return ReadXml(path);
     }
 
-    public static async Task<string> ReadDayDescription(IDay day)
+
+    public static async Task<string?> ReadDayDescription(IDay day)
     {
         try
         {
             var page = await ReadAoCPage($"{day.Year}/day/{day.DayNumber}");
-            // HtmlDocument doc = new HtmlDocument();
-            // doc.Load(page);
-            // var htmlDescriptions =
-            //     doc.DocumentNode.Descendants("article").Where(c => c.GetClasses().Contains("day-desc"));
-            //
-            // string descriptions = string.Empty;
-            // foreach (var d in htmlDescriptions)
-            //     descriptions += d.OuterHtml;
+            if (page == null)
 
-            return page;
+
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(page);
+
+            string newHtml = "<html><body></body></html>";
+
+            var descr = doc.DocumentNode.SelectNodes("//html/body/main/article");
+                
+
+            HtmlDocument partial = new HtmlDocument();
+            partial.LoadHtml(newHtml);
+            var body = partial.DocumentNode.SelectSingleNode("//html/body");
+            body.ChildNodes.AddRange(descr);
+
+            return partial.DocumentNode.OuterHtml;
         }
         catch(Exception ex)
         {

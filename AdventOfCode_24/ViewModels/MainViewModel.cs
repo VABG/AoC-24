@@ -71,7 +71,7 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public bool CanRunTest => SelectedDay?.Data?.TestInput != null
+    public bool CanRunTest => !string.IsNullOrWhiteSpace(SelectedDay?.Data?.TestInput)
                    && !SelectedDay.IsRunning;
 
     private bool _canSwitchTest = true;
