@@ -39,6 +39,7 @@ public class InputReader
         {
             var page = await ReadAoCPage($"{day.Year}/day/{day.DayNumber}");
             if (page == null)
+                return null;
 
 
             HtmlDocument doc = new HtmlDocument();
