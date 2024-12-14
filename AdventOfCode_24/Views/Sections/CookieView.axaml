@@ -4,13 +4,34 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AdventOfCode_24.Views.Sections.CookieView">
-  <Menu>
-    <MenuItem Header="Cookie" IsEnabled="{Binding CanRun}" Background="#252525" Margin="2,2,2,2">
-      <StackPanel Width="300">
-        <Label Content="Data:" />
-        <TextBox Text="{Binding Cookie}" />
-        <Button Content="Save" Command="{Binding SaveCookie}" />
-      </StackPanel>
-    </MenuItem>
-  </Menu>
+  <Button Background="#252525" IsEnabled="{Binding CanRun}">
+    <Button.Styles>
+      <Style>
+        <Style Selector="FlyoutPresenter">
+          <Setter Property="MaxWidth" Value="512"/>
+          <Setter Property="MaxHeight" Value="1024"/>
+          <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
+        </Style>
+      </Style>
+    </Button.Styles>
+    <Button.Flyout>
+      <Flyout Placement="Bottom">
+        <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+          </Grid.RowDefinitions>
+          <StackPanel Orientation="Horizontal">
+            <Button Content="Save" Command="{Binding SaveCookie}" />
+            <TextBox Text="{Binding Cookie}"  
+                     HorizontalAlignment="Stretch" 
+                     MaxWidth="400"
+                     FontFamily="Lucida Console"
+                     FontSize="13"/>
+          </StackPanel>
+        </Grid>
+      </Flyout>
+    </Button.Flyout>
+    Cookie
+  </Button>
 </UserControl>

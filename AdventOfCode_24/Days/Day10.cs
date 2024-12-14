@@ -18,6 +18,7 @@ namespace AdventOfCode_24.Days
 
         int width;
         int height;
+        private Color red = new Color(255, 128,0,0);
 
         private string Part1()
         {
@@ -29,7 +30,7 @@ namespace AdventOfCode_24.Days
                 for (int x = 0; x < width; x++)
                 {
                     levels[x, y] = new Level(int.Parse(Input[y][x].ToString()));
-                    pixels.Add(new Pixel(x, y, new Avalonia.Media.Color((byte)(levels[x, y].Height * 25), 255, 255, 255)));
+                    pixels.Add(new Pixel(x, y, new Avalonia.Media.Color((byte)(levels[x, y].Height * 10), 255, 255, 255)));
                 }
 
             CreateRenderer(width, height);
@@ -91,7 +92,7 @@ namespace AdventOfCode_24.Days
             levels[current.x, current.y].Visited = true;
 
             int currentHeight = levels[current.x, current.y].Height;
-            Renderer?.DrawPixel(new Pixel(current.x, current.y, Colors.Red));
+            Renderer?.DrawPixel(new Pixel(current.x, current.y, red));
             Wait(IsTest ? 0.05 : 0.005);
             Render();
             if (currentHeight == 9)

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using AdventOfCode_24.Model.Days;
 using AdventOfCode_24.Model.WebConnection;
 
@@ -8,7 +7,7 @@ namespace AdventOfCode_24.ViewModels.Sections;
 
 public class DescriptionViewModel : DayBaseViewModel
 {
-    private Dictionary<string, string> _descriptions = new Dictionary<string, string>();
+    private Dictionary<string, string> _descriptions = [];
     string path = @"C:\AoC\DaySites\";
 
     private string? _description;
@@ -79,7 +78,7 @@ public class DescriptionViewModel : DayBaseViewModel
             di.Create();
 
 
-        File.WriteAllText(path + DayToString() + ".html", Description);
+        File.WriteAllText(path + DayToString() + ".txt", Description);
     }
 
     private void ReadAllDays()

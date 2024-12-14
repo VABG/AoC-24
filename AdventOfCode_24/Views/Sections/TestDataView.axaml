@@ -10,18 +10,37 @@
       <Setter Property="FontFamily" Value="Lucida Console" />
     </Style>
   </UserControl.Styles>
-  <Menu>
-    <MenuItem Header="Test Data" IsEnabled="{Binding CanRun}" Background="#252525" Margin="2,2,2,2">
-      <StackPanel Width="300">
-        <Label Content="Data:" />
-        <TextBox Text="{Binding TestInput}" 
-                 Height="300" 
-                 TextWrapping="Wrap" AcceptsReturn="True"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto" />
-        <Label Content="Expected Result:" />
-        <TextBox Text="{Binding TestResult}" />
-        <Button Content="Save" Command="{Binding SaveTestData}" />
-      </StackPanel>
-    </MenuItem>
-  </Menu>
+  <Button IsEnabled="{Binding CanRun}" Background="#252525">
+    <Button.Styles>
+      <Style>
+        <Style Selector="FlyoutPresenter">
+          <Setter Property="MaxWidth" Value="1024"/>
+          <Setter Property="MaxHeight" Value="1024"/>
+          <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
+        </Style>
+      </Style>
+    </Button.Styles>
+    <Button.Flyout>
+      <Flyout Placement="BottomEdgeAlignedLeft">
+        <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+          </Grid.RowDefinitions>
+
+          <StackPanel Width="300">
+            <Label Content="Data:" />
+            <TextBox Text="{Binding TestInput}"
+                     Height="300"
+                     TextWrapping="Wrap" AcceptsReturn="True"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" />
+            <Label Content="Expected Result:" />
+            <TextBox Text="{Binding TestResult}" />
+            <Button Content="Save" Command="{Binding SaveTestData}" />
+          </StackPanel>
+        </Grid>
+      </Flyout>
+    </Button.Flyout>
+    Test Data
+  </Button>
 </UserControl>

@@ -41,21 +41,19 @@ public class InputReader
             if (page == null)
                 return null;
 
-
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(page);
 
-            string newHtml = "<html><body></body></html>";
-
             var descr = doc.DocumentNode.SelectNodes("//html/body/main/article");
-                
+            string res = string.Empty;
+            for (int i = 0; i < descr.Count; i++)
+            {
+                res += HtmlUtilities.ConvertToPlainText(descr[i].InnerHtml);
+                if (i < descr.Count -1)
+                res += "\n\n\n";
+            }
 
-            HtmlDocument partial = new HtmlDocument();
-            partial.LoadHtml(newHtml);
-            var body = partial.DocumentNode.SelectSingleNode("//html/body");
-            body.ChildNodes.AddRange(descr);
-
-            return partial.DocumentNode.OuterHtml;
+            return res;
         }
         catch(Exception ex)
         {

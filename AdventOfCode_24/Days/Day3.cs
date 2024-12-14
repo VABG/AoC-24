@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AdventOfCode_24.Model.Days;
@@ -14,7 +12,7 @@ public class Day3 : Day
 
     private string Part1()
     {
-        string pattern = @"[m][u][l][(]\d+[,]\d+[)]";
+        string pattern = @"mul[(]\d+,\d+[)]";
         RegexOptions options = RegexOptions.Singleline;
         string pattern2 = @"\d+";
 
@@ -43,7 +41,7 @@ public class Day3 : Day
 
     private string Part2()
     {
-        string pattern = @"[m][u][l][(]\d+[,]\d+[)]";
+        string pattern = @"mul[(]\d+,\d+[)]";
         RegexOptions options = RegexOptions.Singleline;
         string pattern2 = @"\d+";
 

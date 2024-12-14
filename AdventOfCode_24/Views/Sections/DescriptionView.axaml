@@ -5,17 +5,38 @@
              xmlns:avalonia="clr-namespace:TheArtOfDev.HtmlRenderer.Avalonia;assembly=Avalonia.HtmlRenderer"
              mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="450"
              x:Class="AdventOfCode_24.Views.Sections.DescriptionView">
-  <Menu>
-    <MenuItem Header="Description" Background="#252525" Margin="2,2,2,2" StaysOpenOnClick="True">
-      <Grid MaxHeight="1024" MaxWidth="1024">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="auto"/>
-          <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        
-        <Button Grid.Row="0" Content="Refresh" Command="{Binding Refresh}"/>
-        <avalonia:HtmlPanel Grid.Row="1" Text="{Binding Description}" HorizontalAlignment="Stretch"/>
-      </Grid>
-    </MenuItem>
-  </Menu>
+  <Button Background="#252525">
+    <Button.Styles>
+      <Style>
+        <Style Selector="FlyoutPresenter">
+          <Setter Property="MaxWidth" Value="1024"/>
+          <Setter Property="MaxHeight" Value="1024"/>
+          <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
+        </Style>
+      </Style>
+    </Button.Styles>
+    <Button.Flyout>
+      <Flyout Placement="Bottom">
+        <Grid MaxHeight="1024" Width="512" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+          </Grid.RowDefinitions>
+
+          <Button Grid.Row="0" Content="Refresh" Command="{Binding Refresh}"/>
+          <TextBox Grid.Row="1" MaxHeight="740"
+                   Foreground="WhiteSmoke"
+                   Margin="0,10,0,0"
+                   Text="{Binding Description}"
+                   FontFamily="Lucida Console"
+                   FontSize="13"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+                   IsReadOnly="True"
+                   TextWrapping="WrapWithOverflow"/>
+        </Grid>
+      </Flyout>
+    </Button.Flyout>
+    Description
+  </Button>
 </UserControl>
