@@ -10,6 +10,8 @@
         Title="AdventOfCode_24"
         Width="1024"
         Height="575"
+        MinHeight="43"
+        MinWidth="810"
         TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
         ExtendClientAreaToDecorationsHint="True">
