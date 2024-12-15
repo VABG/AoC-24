@@ -65,7 +65,7 @@ public class Day6 : Day
             if (LookForLoop(p.X, p.Y, lvl))
                 loops++;
             
-            Wait(IsTest ? 0.1 : 0.1);
+            Wait(IsTest ? 0.1 : 0.001);
         }
         return loops.ToString();
     }

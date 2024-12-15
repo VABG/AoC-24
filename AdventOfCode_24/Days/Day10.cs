@@ -30,7 +30,11 @@ namespace AdventOfCode_24.Days
                 for (int x = 0; x < width; x++)
                 {
                     levels[x, y] = new Level(int.Parse(Input[y][x].ToString()));
-                    pixels.Add(new Pixel(x, y, new Avalonia.Media.Color((byte)(levels[x, y].Height * 10), 255, 255, 255)));
+                    float height = levels[x, y].Height;
+                    height *= .1f;
+                    height *= height;
+
+                    pixels.Add(new Pixel(x, y, new Avalonia.Media.Color((byte)(height * 200), 255, 255, 255)));
                 }
 
             CreateRenderer(width, height);
