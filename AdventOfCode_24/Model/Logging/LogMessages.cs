@@ -16,12 +16,12 @@ namespace AdventOfCode_24.Model.Logging
         
         public void Error(string message)
         {
-            Write(message, Colors.Red);
+            Write(message, new Color(190, 255,0,0));
         }
 
         public void Success(string message)
         {
-            Write(message, Colors.GreenYellow);
+            Write(message, new Color(190, 160,255,0));
         }
 
         public void Write(string message, Color color)
