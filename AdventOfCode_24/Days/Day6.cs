@@ -60,7 +60,7 @@ public class Day6 : Day
         foreach (var p in visited)
         {
             Render();
-            Renderer.Clear(Colors.Black);
+            Renderer.Clear(new Color(128,0,0,0));
             Renderer.DrawPixels(boxPixels);
             if (LookForLoop(p.X, p.Y, lvl))
                 loops++;
