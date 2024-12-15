@@ -297,8 +297,8 @@ namespace AdventOfCode_24.ViewModels.Rendering
                 _uniforms ??= new SKRuntimeEffectUniforms(_effect);
 
                 _uniforms["iTime"] = (float)CompositionNow.TotalSeconds;
-                _uniforms["iResolution"] = new[] { (float)512, (float)512 };
-                _uniforms["iSize"] = new[] { targetWidth, targetHeight };
+                //_uniforms["iResolution"] = new[] { (float)512, (float)512 };
+                _uniforms["iResolution"] = new[] { targetWidth, targetHeight };
 
                 using (var paint = new SKPaint())
                 using (var shader = _effect.ToShader(_uniforms))

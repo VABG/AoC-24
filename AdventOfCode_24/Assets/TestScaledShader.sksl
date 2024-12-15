@@ -1,0 +1,20 @@
+﻿uniform float2 iResolution;
+uniform float iTime;
+
+float4 main(float2 fragCoord)
+{       
+    // Normalized pixel coordinates (from 0 to 1)
+    float2 uv = fragCoord/512;
+    uv.x *= iResolution.x/512;
+    uv.y *= iResolution.y/512;
+
+
+    uv.y -= iTime * .1;
+
+    uv.x = fract(uv.x);
+    uv.y = fract(uv.y);
+
+    float3 col = float3(uv.x,uv.y,0);
+    // Output to screen
+    return float4(col,1);
+}

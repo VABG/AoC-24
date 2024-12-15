@@ -16,45 +16,59 @@
     <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
   </UserControl.Resources>
   <Grid>
-    <shader:ShaderAnimationControl x:Name="ShaderHost" Stretch="Fill" StretchDirection="Both" ShaderUri="avares://AdventOfCode_24/Assets/TestShader.sksl"/>
-    <ListBox ItemsSource="{Binding Log}"
+    <shader:ShaderAnimationControl x:Name="ShaderHost" Stretch="Fill" StretchDirection="Both" ShaderUri="avares://AdventOfCode_24/Assets/Snow.sksl"/>
+    <Grid Background="#C3030900">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+      <Label Content="Log:"
+       HorizontalAlignment="Left"
+       VerticalAlignment="Top"
+       Foreground="WhiteSmoke"
+       FontFamily="Lucida Console"
+       FontSize="12" Grid.Row="0"/>
+      <ListBox ItemsSource="{Binding Log}"
               SelectedItem="{Binding SelectedLogItem}"
               AutoScrollToSelectedItem="True"
               ScrollViewer.VerticalScrollBarVisibility="Auto"
               ScrollViewer.IsScrollInertiaEnabled="False"
               ScrollViewer.IsDeferredScrollingEnabled="False"
               ScrollViewer.HorizontalScrollBarVisibility="Auto"
-              Background="#C3030900">
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <Grid HorizontalAlignment="Stretch">
-            <TextBlock Text="{Binding Message}"
-                       Foreground="{Binding Color, 
+              Background="Transparent"
+               Grid.Row="1">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid HorizontalAlignment="Stretch">
+              <TextBlock Text="{Binding Message}"
+                         Foreground="{Binding Color, 
                                    Converter={StaticResource ColorToBrushConverter}}" />
-            <Grid.ContextMenu>
-              <ContextMenu Name="BlockMenu">
-                <MenuItem Header="Copy to Clipboard"
-                          Command="{Binding CopyToClipboard}"
-                          CommandParameter="{Binding ElementName=ViewControl}" />
-              </ContextMenu>
-            </Grid.ContextMenu>
-          </Grid>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-      <ListBox.Styles>
-        <Style Selector="ListBoxItem">
-          <Setter Property="FontSize" Value="12" />
-          <Setter Property="Margin" Value="1" />
-          <Setter Property="Padding" Value="0" />
-          <Setter Property="FontFamily" Value="Lucida Console" />
-        </Style>
-        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
-          <Setter Property="Background" Value="#498B0000"/>
-        </Style>
-        <Style Selector="ListBoxItem:pressed /template/ ContentPresenter">
-          <Setter Property="Background" Value="#490D8B00"/>
-        </Style>
-      </ListBox.Styles>
-    </ListBox>
+              <Grid.ContextMenu>
+                <ContextMenu Name="BlockMenu">
+                  <MenuItem Header="Copy to Clipboard"
+                            Command="{Binding CopyToClipboard}"
+                            CommandParameter="{Binding ElementName=ViewControl}" />
+                </ContextMenu>
+              </Grid.ContextMenu>
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+        <ListBox.Styles>
+          <Style Selector="ListBoxItem">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="1" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="FontFamily" Value="Lucida Console" />
+          </Style>
+          <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="#498B0000"/>
+          </Style>
+          <Style Selector="ListBoxItem:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#490D8B00"/>
+          </Style>
+        </ListBox.Styles>
+      </ListBox>
+    </Grid>
+
   </Grid>
 </UserControl>

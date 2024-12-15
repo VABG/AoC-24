@@ -1,6 +1,5 @@
 ﻿uniform float2 iResolution;
 uniform float iTime;
-uniform float2 iSize;
 
 float hashOld12(float2 p)
 {
@@ -25,29 +24,27 @@ float flake (float2 uv)
     return clamp(d, .0, 1.0);
 }
 
-float snow(float2 uv, float size, float ratio, float2 speed)
+float snow(float2 uv, float size, float2 speed)
 {
-    float repeats = iSize.x/size;
+    float2 repeats = float2(size,size);
+    uv -= speed * iTime;
     float time = iTime + 500;
-    float2 id2d = float2(ceil(uv.x*repeats), ceil(uv.y*repeats));
+    float2 id2d = float2(ceil(uv.x*repeats.x), ceil(uv.y*repeats.y));
     float id = hashOld12(id2d);
     
-  	uv = float2(fract(uv.x*repeats), fract(uv.y*repeats));
-    uv -= fract(iTime * .5 + fract(id*594.4781));
+  	uv = float2(fract(uv.x*repeats.x), fract(uv.y*repeats.y));
     uv += wobbleOffset(id, time, 0.33);
     return flake(uv) * (id+.25);
 }
 
 float4 main(float2 fragCoord)
-{       
-    // Normalized pixel coordinates (from 0 to 1)
+{
     float2 uv = fragCoord/512;
-    float ratio = iSize.y/iSize.x;
-    uv.x += sin(iTime*.25+uv.y/iSize.y*10)/iSize.x*30;
-  	uv.y *= ratio;
+    uv.x *= iResolution.x/512;
+    uv.y *= iResolution.y/512;
 
-    float s = snow(uv, 32, ratio, float2(.01, .01));
-    s += snow(uv, 24, ratio, float2(.02, .015));
+    float s = snow(uv, 20, float2(.015, .02));
+    s += snow(uv, 16, float2(.02, .015));
 
     float3 col = float3(s,s,s);
     // Output to screen
