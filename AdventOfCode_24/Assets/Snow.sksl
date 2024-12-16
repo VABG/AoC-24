@@ -8,10 +8,11 @@ float hashOld12(float2 p)
 
 float2 wobbleOffset(float id, float time, float scale)
 {
-    time *= 0.5 + fract(id * 5123.579);
+    float time2 =  time * (0.25 + fract(id * 2496.531));
+    time *= 0.25 + fract(id * 5123.579);
     float id2 = fract(id * 4127.13);
     id *= 1241.0;
-    return float2(sin(id+ time)*scale, cos(id2 +time+413.51) * scale);
+    return float2(sin(id+ time)*scale, cos(id2 +time2+413.51) * scale);
 }
 
 float flake(float2 uv)
@@ -44,9 +45,9 @@ float4 main(float2 fragCoord)
     uv.y *= iResolution.y/512;
 
     uv.x += sin(uv.y*.5 + iTime*.25) * 0.05;
-    float s = snow(uv, 20, float2(.015, .03));
-    s += snow(uv, 16, float2(.02, .045));
-    s += snow(uv, 10, float2(.05, .08));
+    float s = snow(uv, 20, float2(.015, .03)) * .2;
+    s += snow(uv, 18, float2(.02, .045)) * .5;
+    s += snow(uv, 16, float2(.05, .08));
 
     float3 col = float3(s,s,s);
     // Output to screen
