@@ -1,8 +1,9 @@
 ﻿using System;
+using AdventOfCode_24;
 using Avalonia;
 using Avalonia.ReactiveUI;
 
-namespace AdventOfCode_24.Desktop;
+namespace AdventOfCode.Desktop;
 
 class Program
 {
