@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AdventOfCode_24.Views.Sections.TestDataView">
+             x:Class="AdventOfCodeUI.Views.Sections.TestDataView">
   <UserControl.Styles>
     <Style Selector="TextBox">
       <Setter Property="FontSize" Value="13" />

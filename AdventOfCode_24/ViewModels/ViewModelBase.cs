@@ -1,7 +1,7 @@
-﻿using ReactiveUI;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using ReactiveUI;
 
-namespace AdventOfCode_24.ViewModels;
+namespace AdventOfCodeUI.ViewModels;
 
 public class ViewModelBase : ReactiveObject, INotifyPropertyChanged
 {

@@ -1,6 +1,6 @@
-﻿using AdventOfCode_24.Model.Days;
+﻿using AdventOfCodeCore.Models.Days;
 
-namespace AdventOfCode_24.ViewModels
+namespace AdventOfCodeUI.ViewModels
 {
     public abstract class DayBaseViewModel : ViewModelBase
     {

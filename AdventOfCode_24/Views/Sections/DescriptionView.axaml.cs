@@ -1,8 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
-namespace AdventOfCode_24.Views.Sections;
+namespace AdventOfCodeUI.Views.Sections;
 
 public partial class DescriptionView : UserControl
 {

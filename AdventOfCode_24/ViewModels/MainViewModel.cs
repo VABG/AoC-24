@@ -1,17 +1,17 @@
-﻿using AdventOfCode_24.Model.Days;
-using AdventOfCode_24.Model.WebConnection;
-using AdventOfCode_24.ViewModels.Sections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AdventOfCodeCore.Models.Days;
+using AdventOfCodeCore.Models.WebConnection;
+using AdventOfCodeUI.ViewModels.Sections;
 
-namespace AdventOfCode_24.ViewModels;
+namespace AdventOfCodeUI.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
     public List<int> Years { get; }
-    private int _selectedYear;
-    public int SelectedYear
+    private int? _selectedYear;
+    public int? SelectedYear
     {
         get => _selectedYear;
         set
@@ -88,9 +88,9 @@ public class MainViewModel : ViewModelBase
 
     public LogViewModel Log { get; }
     public TestDataViewModel TestData { get; }
-    public VisualizationViewModel Visualization { get; }
+    public VisualizerViewModel Visualizer { get; }
     public DescriptionViewModel Description { get; }
-    private List<DayBaseViewModel> _viewSections;
+    private readonly List<DayBaseViewModel> _viewSections;
 
     public CookieViewModel Cookie { get; }
 
@@ -101,8 +101,8 @@ public class MainViewModel : ViewModelBase
         _viewSections.Add(Log);
         TestData = new TestDataViewModel(this);
         _viewSections.Add(TestData);
-        Visualization = new VisualizationViewModel();
-        _viewSections.Add(Visualization);
+        Visualizer = new VisualizerViewModel();
+        _viewSections.Add(Visualizer);
         Description = new DescriptionViewModel();
         _viewSections.Add(Description);
 
@@ -110,9 +110,9 @@ public class MainViewModel : ViewModelBase
         
         _daysReader = new DaysReader();
         Years = _daysReader.Days.Keys.ToList();
-        SelectedYear = Years.Last();
+        SelectedYear = Years.LastOrDefault();
         ChangeYear();
-        SelectedDay = Days?.Last();
+        SelectedDay = Days?.LastOrDefault();
     }
 
     private async void ChangeDay(Day? newDay)
@@ -121,7 +121,7 @@ public class MainViewModel : ViewModelBase
         SelectedPart = null;
 
         if (_selectedDay != null)
-            _selectedDay.CompleteRun -= SelectedDayOnCompleteRun;
+            _selectedDay.RunComplete -= SelectedDayOnCompleteRun;
 
         _selectedDay = newDay;
 
@@ -142,7 +142,7 @@ public class MainViewModel : ViewModelBase
                 _selectedPart = null;
             CanRun = true;
 
-            _selectedDay.CompleteRun += SelectedDayOnCompleteRun;
+            _selectedDay.RunComplete += SelectedDayOnCompleteRun;
         }
 
         SelectedPart = _selectedPart;
@@ -162,24 +162,25 @@ public class MainViewModel : ViewModelBase
     private void ChangeYear()
     {
         OnPropertyChanged(nameof(SelectedYear));
-        Days = _daysReader.Days[SelectedYear];
-        SelectedDay = Days.Last();
+        if (SelectedYear != null && _daysReader.Days.TryGetValue(SelectedYear.Value, out var value)) 
+            Days = value;
+        SelectedDay = Days?.LastOrDefault();
     }
 
-    public void Run()
+    public async Task Run()
     {
-        Run(false);
+        await Run(false);
     }
 
-    public void RunTest()
+    public async Task RunTest()
     {
-        Run(true);
+        await Run(true);
     }
 
     public void OpenSite()
     {
         if (SelectedDay != null)
-            InputReader.OpenSite(SelectedDay.Year, SelectedDay.DayNumber);
+            DayInputReader.OpenSite(SelectedDay.Year, SelectedDay.DayNumber);
     }
 
     private async Task Run(bool isTest)

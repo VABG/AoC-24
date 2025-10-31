@@ -1,9 +1,9 @@
-﻿using AdventOfCode_24.ViewModels;
-using Avalonia.Controls.Templates;
+﻿using System;
+using AdventOfCodeUI.ViewModels;
 using Avalonia.Controls;
-using System;
+using Avalonia.Controls.Templates;
 
-namespace AdventOfCode_24.Views
+namespace AdventOfCodeUI.Views
 {
     public class ViewLocator : IDataTemplate
     {

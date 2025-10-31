@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace AdventOfCode_24.Views.Sections;
+namespace AdventOfCodeUI.Views.Sections;
 
 public partial class LogView : UserControl
 {

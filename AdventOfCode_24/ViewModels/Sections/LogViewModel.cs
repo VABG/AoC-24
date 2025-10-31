@@ -1,24 +1,24 @@
-﻿using AdventOfCode_24.Model.Days;
-using AdventOfCode_24.Model.Logging;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using AdventOfCodeCore.Models.Days;
+using AdventOfCodeCore.Models.Logging;
+using AdventOfCodeUI.ViewModels.Sections.Logging;
 
-namespace AdventOfCode_24.ViewModels.Sections;
+namespace AdventOfCodeUI.ViewModels.Sections;
 
 public class LogViewModel : DayBaseViewModel
 {
     private bool _isWaitingForScrollDelay;
 
-    private ConcurrentBag<LogMessage> _messageCache = [];
-    public ObservableCollection<LogMessage> Log { get; } = [];
+    private readonly ConcurrentBag<LogMessageViewModel> _messageCache = [];
+    public ObservableCollection<LogMessageViewModel> Log { get; } = [];
 
-    private LogMessage? _selectedLogItem;
+    private LogMessageViewModel? _selectedLogItem;
 
-    public LogMessage? SelectedLogItem
+    public LogMessageViewModel? SelectedLogItem
     {
         get => _selectedLogItem;
         set
@@ -31,7 +31,7 @@ public class LogViewModel : DayBaseViewModel
     protected override void UpdateDay(Day? previous)
     {
         if (previous != null)
-            previous.Log.UpdateMessage -= LogUpdated;
+            previous.Log.MessageLogged -= LogUpdated;
         SelectedLogItem = null;
 
         if (Day == null)
@@ -42,16 +42,14 @@ public class LogViewModel : DayBaseViewModel
             return;
         }
 
-        Day.Log.UpdateMessage += LogUpdated;
+        Day.Log.MessageLogged += LogUpdated;
         _messageCache.Clear();
         if (Day.Log.Messages.Count > 0)
-            Log.ReplaceCollection(Day.Log.Messages);
+            Log.ReplaceCollection(Day.Log.Messages.Select(m =>  new LogMessageViewModel(m)));
         else 
             Log.Clear();
-        if (Log.Count != 0)
-            SelectedLogItem = Log.Last();
-        else
-            SelectedLogItem = null;
+
+        SelectedLogItem = Log.LastOrDefault();
         OnPropertyChanged(nameof(Log));
     }
 
@@ -68,7 +66,7 @@ public class LogViewModel : DayBaseViewModel
 
     private void LogUpdated(LogMessage message)
     {
-        _messageCache.Add(message);
+        _messageCache.Add(new LogMessageViewModel(message));
         if (_isWaitingForScrollDelay)
             return;
 
@@ -81,7 +79,7 @@ public class LogViewModel : DayBaseViewModel
         Log.AddRange(_messageCache.Reverse());
         _messageCache.Clear();
         if (Log.Count > 0)
-            SelectedLogItem = Log.Last();
+            SelectedLogItem = Log.LastOrDefault();
     }
 
     private async Task WaitToUpdateLog()

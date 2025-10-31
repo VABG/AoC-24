@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-namespace AdventOfCode_24.Views;
+namespace AdventOfCodeUI.Views;
 
 public partial class MainWindow : Window
 {

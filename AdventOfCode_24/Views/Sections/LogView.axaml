@@ -4,19 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="512" d:DesignHeight="512"
              xmlns:converters="clr-namespace:Avalonia.Markup.Xaml.Converters;assembly=Avalonia.Markup.Xaml"
-             xmlns:vm="clr-namespace:AdventOfCode_24.ViewModels.Sections"
-             xmlns:shader="using:AdventOfCode_24.ViewModels.Rendering"
-             x:DataType="vm:LogViewModel"
-             x:Class="AdventOfCode_24.Views.Sections.LogView"
+             xmlns:rendering="clr-namespace:AdventOfCodeUI.ViewModels.Rendering"
+             xmlns:sections="clr-namespace:AdventOfCodeUI.ViewModels.Sections"
+             x:DataType="sections:LogViewModel"
+             x:Class="AdventOfCodeUI.Views.Sections.LogView"
   x:Name="ViewControl">
   <Design.DataContext>
-    <vm:LogViewModel/>
+    <sections:LogViewModel/>
   </Design.DataContext>
   <UserControl.Resources>
     <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
   </UserControl.Resources>
   <Grid>
-    <shader:ShaderAnimationControl x:Name="ShaderHost" Stretch="Fill" StretchDirection="Both" ShaderUri="avares://AdventOfCode_24/Assets/Snow.sksl"/>
+    <rendering:ShaderAnimationControl x:Name="ShaderHost" Stretch="Fill" StretchDirection="Both" ShaderUri="avares://AdventOfCodeUI/Assets/Snow.sksl"/>
     <Grid Background="#C3030900">
       <Grid.RowDefinitions>
         <RowDefinition Height="auto"/>

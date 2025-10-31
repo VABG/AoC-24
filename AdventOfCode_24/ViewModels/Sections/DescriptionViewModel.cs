@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.IO;
-using AdventOfCode_24.Model.Days;
-using AdventOfCode_24.Model.WebConnection;
+using System.Threading.Tasks;
+using AdventOfCodeCore.Models.Days;
+using AdventOfCodeCore.Models.WebConnection;
 
-namespace AdventOfCode_24.ViewModels.Sections;
+namespace AdventOfCodeUI.ViewModels.Sections;
 
 public class DescriptionViewModel : DayBaseViewModel
 {
-    private Dictionary<string, string> _descriptions = [];
-    string path = @"C:\AoC\DaySites\";
+    private readonly Dictionary<string, string> _descriptions = [];
+    private const string Path = @"C:\AoC\DaySites\";
 
     private string? _description;
     public string? Description
@@ -23,12 +24,12 @@ public class DescriptionViewModel : DayBaseViewModel
         }
     } 
 
-    public async void Refresh()
+    public async Task Refresh()
     {
         if (Day == null)
             return;
 
-        var d = await InputReader.ReadDayDescription(Day);
+        var d = await DayInputReader.ReadDayDescription(Day);
         Description = d;
         if (d == null || string.IsNullOrEmpty(d))
             return;
@@ -38,10 +39,8 @@ public class DescriptionViewModel : DayBaseViewModel
     
     protected override void UpdateDay(Day? previous)
     {
-        if (_descriptions == null || _descriptions.Count == 0)
-        {
+        if (_descriptions.Count == 0)
             ReadAllDays();
-        }
 
 
         if (Day == null)
@@ -50,11 +49,8 @@ public class DescriptionViewModel : DayBaseViewModel
             return;
         }
 
-        string dayStr = DayToString();
-        if (_descriptions.ContainsKey(dayStr))
-            Description = _descriptions[dayStr];
-
-        else Description = null;
+        var dayStr = DayToString();
+        Description = _descriptions.GetValueOrDefault(dayStr);
     }
 
     private string DayToString()
@@ -63,7 +59,6 @@ public class DescriptionViewModel : DayBaseViewModel
             return string.Empty;
         
         return Day.Year.ToString() + Day.DayNumber;
-        ;
     }
     
     protected override void UpdatePart(int? previous)
@@ -73,17 +68,17 @@ public class DescriptionViewModel : DayBaseViewModel
 
     private void WriteCurrentDay()
     {
-        DirectoryInfo di = new DirectoryInfo(path);
+        DirectoryInfo di = new DirectoryInfo(Path);
         if (!di.Exists)
             di.Create();
 
 
-        File.WriteAllText(path + DayToString() + ".txt", Description);
+        File.WriteAllText(Path + DayToString() + ".txt", Description);
     }
 
     private void ReadAllDays()
     {
-        DirectoryInfo di = new(path);
+        DirectoryInfo di = new(Path);
         if (!di.Exists)
             return;
 
@@ -91,7 +86,7 @@ public class DescriptionViewModel : DayBaseViewModel
         foreach(var f in files)
         {
             var str = File.ReadAllText(f.FullName);
-            if (str == null)
+            if (str.Length == 0)
                 continue;
             _descriptions[f.Name.Substring(0, f.Name.Length-f.Extension.Length)] = str;
         }

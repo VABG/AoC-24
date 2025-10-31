@@ -1,6 +1,6 @@
-﻿using AdventOfCode_24.Model.Days;
+﻿using AdventOfCodeCore.Models.Days;
 
-namespace AdventOfCode_24.ViewModels.Sections
+namespace AdventOfCodeUI.ViewModels.Sections
 {
     public class TestDataViewModel : DayBaseViewModel
     {
@@ -11,7 +11,7 @@ namespace AdventOfCode_24.ViewModels.Sections
             get => Day?.Data?.TestInput;
             set
             {
-                if (Day != null && Day.Data != null)
+                if (Day is { Data: not null })
                     Day.Data.TestInput = value;
 
                 _parent.OnPropertyChanged(nameof(_parent.CanRunTest));

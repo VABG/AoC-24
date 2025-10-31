@@ -2,30 +2,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:AdventOfCode_24.ViewModels"
-             xmlns:visualization="clr-namespace:AdventOfCode_24.Model.Visualization"
+             xmlns:viewModels="clr-namespace:AdventOfCodeUI.ViewModels"
              mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="512"
-             x:Class="AdventOfCode_24.Views.MainView"
-             x:DataType="vm:MainViewModel"
+             x:Class="AdventOfCodeUI.Views.MainView"
+             x:DataType="viewModels:MainViewModel"
              x:Name="ViewControl">
   <Design.DataContext>
     <!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainViewModel />
+    <viewModels:MainViewModel />
   </Design.DataContext>
-  <Grid>
+  <Grid RowDefinitions="auto,auto,*" 
+        ColumnDefinitions="*,5,*">
+    
     <!-- Layout -->
-    <Grid.RowDefinitions>
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="*" />
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*"></ColumnDefinition>
-      <ColumnDefinition Width="5"></ColumnDefinition>
-      <ColumnDefinition Width="*"></ColumnDefinition>
-    </Grid.ColumnDefinitions>
-
     <GridSplitter Grid.Column="1" Grid.Row="2" Background="#7F000000" VerticalAlignment="Stretch"
                   ResizeBehavior="PreviousAndNext" Width="3" />
     <TextBlock Grid.Row="2" Grid.Column="0"></TextBlock>
@@ -63,7 +53,7 @@
     </Grid>
 
     <!-- Visualization -->
-    <ContentControl Grid.Row="2" Grid.Column="2" Content="{Binding Visualization}"/>
+    <ContentControl Grid.Row="2" Grid.Column="2" Content="{Binding Visualizer}"/>
 
     <!-- Log -->
     <ContentControl  Grid.Row="2" Grid.Column="0" Content="{Binding Log}"/>

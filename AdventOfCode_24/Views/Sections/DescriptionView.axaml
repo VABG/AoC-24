@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:avalonia="clr-namespace:TheArtOfDev.HtmlRenderer.Avalonia;assembly=Avalonia.HtmlRenderer"
              mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="450"
-             x:Class="AdventOfCode_24.Views.Sections.DescriptionView">
+             x:Class="AdventOfCodeUI.Views.Sections.DescriptionView">
   <Button Background="#252525">
     <Button.Styles>
       <Style>

@@ -1,6 +1,6 @@
-﻿using AdventOfCode_24.Model.WebConnection;
+﻿using AdventOfCodeCore.Models.WebConnection;
 
-namespace AdventOfCode_24.ViewModels.Sections
+namespace AdventOfCodeUI.ViewModels.Sections
 {
     public class CookieViewModel : ViewModelBase
     {

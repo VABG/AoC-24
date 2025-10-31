@@ -1,15 +1,15 @@
-﻿using Avalonia;
+﻿using System;
+using System.IO;
+using System.Numerics;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Rendering.Composition;
 using Avalonia.Skia;
 using SkiaSharp;
-using System;
-using System.IO;
-using System.Numerics;
 
-namespace AdventOfCode_24.ViewModels.Rendering
+namespace AdventOfCodeUI.ViewModels.Rendering
 {
     public class ShaderAnimationControl : UserControl
     {
@@ -286,13 +286,13 @@ namespace AdventOfCode_24.ViewModels.Rendering
 
             private void Draw(SKCanvas canvas)
             {
-                if (_isDisposed || _effect is null)
+                if (_isDisposed || _effect is null || _boundsSize == null)
                     return;
 
                 canvas.Save();
 
-                var targetWidth = (float)_boundsSize?.Width;
-                var targetHeight = (float)_boundsSize?.Height;
+                var targetWidth = (float)_boundsSize?.Width!;
+                var targetHeight = (float)_boundsSize?.Height!;
 
                 _uniforms ??= new SKRuntimeEffectUniforms(_effect);
 

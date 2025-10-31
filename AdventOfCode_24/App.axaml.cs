@@ -1,9 +1,9 @@
-﻿using AdventOfCode_24.ViewModels;
-using AdventOfCode_24.Views;
-
+﻿using AdventOfCodeUI.ViewModels;
+using AdventOfCodeUI.Views;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using MainWindow = AdventOfCodeUI.Views.MainWindow;
 
 namespace AdventOfCode_24;
 
