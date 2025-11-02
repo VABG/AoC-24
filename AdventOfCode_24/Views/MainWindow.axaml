@@ -25,10 +25,18 @@
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
         <Grid RowDefinitions="30,*">
-            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <Label Margin="20,10,0,0">Advent Of Code</Label>
-            </StackPanel>
-            <views:MainView Grid.Row="1" Margin="10" />
+            <Grid Background="#7E000000"
+                  IsHitTestVisible="False">
+                <StackPanel Grid.Row="0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                    <Label Margin="0,2,0,0"
+                           HorizontalAlignment="Center"
+                           Foreground="#A6FFFFFF"
+                           Content="Advent Of Code" />
+                </StackPanel>
+            </Grid>
+            <views:MainView Grid.Row="1" />
         </Grid>
     </Panel>
 </Window>

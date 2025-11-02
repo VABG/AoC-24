@@ -35,11 +35,11 @@
             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20" HorizontalAlignment="Center">
                 <Button Content="Save" 
                         Margin="5" 
-                        IsEnabled="{Binding ButtonsActive }" 
+                        IsEnabled="{Binding OkButtonActive }" 
                         Command="{Binding Save}"/>
                 <Button Content="Cancel" 
                         Margin="5"  
-                        IsEnabled="{Binding ButtonsActive }" 
+                        IsEnabled="{Binding CancelButtonActive }" 
                         Command="{Binding Cancel}"/>
             </StackPanel>
         </Grid>

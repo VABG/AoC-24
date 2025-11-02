@@ -6,21 +6,27 @@ namespace AdventOfCodeUI.ViewModels;
 public class SettingsViewModel : ViewModelBase
 {
     private readonly MainViewModel _mainViewModel;
+    private bool _okButtonActive;
 
-    public SettingsViewModel(MainViewModel mainViewModel)
+    public bool OkButtonActive
     {
-        _mainViewModel = mainViewModel;
-    }
-
-    private bool _buttonsActive;
-
-    public bool ButtonsActive
-    {
-        get => _buttonsActive;
+        get => _okButtonActive;
         set
         {
-            _buttonsActive = value;
-            OnPropertyChanged(nameof(ButtonsActive));
+            _okButtonActive = value;
+            OnPropertyChanged(nameof(OkButtonActive));
+        }
+    }
+    
+    private bool _cancelButtonActive;
+    
+    public bool CancelButtonActive
+    {
+        get => _cancelButtonActive;
+        set
+        {
+            _cancelButtonActive = value;
+            OnPropertyChanged(nameof(CancelButtonActive));
         }
     }
     
@@ -56,13 +62,20 @@ public class SettingsViewModel : ViewModelBase
             UpdateButtonStatus();
         }
     }
+    
+    public SettingsViewModel(MainViewModel mainViewModel)
+    {
+        _mainViewModel = mainViewModel;
+        UpdateButtonStatus();
+    }
 
     private void UpdateButtonStatus()
     {
-        ButtonsActive = ShouldButtonsBeActive();
+        OkButtonActive = ShouldOkButtonBeActive();
+        CancelButtonActive = Settings.HasSettings || (OkButtonActive && Settings.HasSettings);
     }
 
-    private bool ShouldButtonsBeActive()
+    private bool ShouldOkButtonBeActive()
     {
         var success = true;
         string newStatus = "";
@@ -84,7 +97,7 @@ public class SettingsViewModel : ViewModelBase
             if (!dir.Exists)
             {
                 var str = !string.IsNullOrEmpty(Status) ? "\n" : "";
-                newStatus += str + "Target folder is missing";
+                newStatus += str + "Target folder is invalid";
                 success = false;
             }
         }
