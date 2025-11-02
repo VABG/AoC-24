@@ -1,6 +1,4 @@
-using AdventOfCodeCore.Interfaces;
-
-namespace AdventOfCodeCore;
+namespace AdventOfCodeCore.Interfaces;
 
 public interface IRendererImplementations
 {

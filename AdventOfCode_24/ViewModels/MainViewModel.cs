@@ -133,6 +133,8 @@ public class MainViewModel : ViewModelBase
         SettingsVm =  new SettingsViewModel(this);
         if (!Settings.HasSettings)
             SettingsOpen = true;
+        else
+            ReadDays();
     }
 
     public void ReadDays()

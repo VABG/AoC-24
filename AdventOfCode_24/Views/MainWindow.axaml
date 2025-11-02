@@ -7,6 +7,7 @@
         x:Class="AdventOfCodeUI.Views.MainWindow"
         Icon="../Assets/christmas_tree_icon.ico"
         Title="AdventOfCode"
+        FontSize="12"
         Width="1024"
         Height="575"
         MinHeight="43"
@@ -27,12 +28,12 @@
         <Grid RowDefinitions="30,*">
             <Grid Background="#7E000000"
                   IsHitTestVisible="False">
-                <StackPanel Grid.Row="0"
-                            HorizontalAlignment="Center"
+                <StackPanel HorizontalAlignment="Center"
                             Orientation="Horizontal">
                     <Label Margin="0,2,0,0"
                            HorizontalAlignment="Center"
                            Foreground="#A6FFFFFF"
+                           FontSize="14"
                            Content="Advent Of Code" />
                 </StackPanel>
             </Grid>

@@ -6,17 +6,15 @@ namespace AdventOfCodeCore.DataReading
 {
     public static class DaysReader
     {
-        public static Dictionary<int, List<Day>> ReadYearsAndDays(string? dllFilePath)
+        public static Dictionary<int, List<Day>> ReadYearsAndDays(string? dllFolderPath)
         {
-            if (string.IsNullOrWhiteSpace(dllFilePath))
+            if (string.IsNullOrWhiteSpace(dllFolderPath))
                 return [];
-            var dll = TryLoadAssembly(dllFilePath);
-            if (dll is null)
+
+            var instances = TryGetAssemblyWithDays(dllFolderPath);
+            if (instances == null || instances.Length == 0)
                 return [];
             
-            var types = dll.GetExportedTypes().Where(t => typeof(IDay).IsAssignableFrom(t)).ToArray();
-
-            var instances = GetInstances(types);
             Dictionary<int, List<Day>> days = [];
             foreach (var instance in instances)
             {
@@ -35,11 +33,31 @@ namespace AdventOfCodeCore.DataReading
             return days;
         }
 
+        private static IDay[]? TryGetAssemblyWithDays(string dllFolderPath)
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(dllFolderPath);
+            var dlls = dirInfo.GetFiles("*.dll", SearchOption.TopDirectoryOnly);
+
+            return dlls.Select(dll => TryGetAssemblyFromDll(dll.FullName))
+                .OfType<IDay[]>()
+                .FirstOrDefault(days => days.Length != 0);
+        }
+
+        private static IDay[]? TryGetAssemblyFromDll(string dllFilePath)
+        {
+            var dll = TryLoadAssembly(dllFilePath);
+            if (dll is null)
+                return null;
+            var types = dll.GetTypes().Where(t => typeof(IDay).IsAssignableFrom(t)).ToArray();
+            var instances = GetInstances(types);
+            return instances.Length != 0 ? instances : null;
+        }
+
         private static Assembly? TryLoadAssembly(string dllFilePath)
         {
             try
             {
-                return Assembly.LoadFile(dllFilePath);
+                return Assembly.LoadFrom(dllFilePath);
             }
             catch
             {
