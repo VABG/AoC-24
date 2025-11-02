@@ -5,7 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using MainWindow = AdventOfCodeUI.Views.MainWindow;
 
-namespace AdventOfCode_24;
+namespace AdventOfCodeUI;
 
 public partial class App : Application
 {

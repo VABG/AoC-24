@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             Width="400"
+             x:Class="AdventOfCodeUI.Views.SettingsView">
+    <Grid RowDefinitions="*, auto" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        <Grid HorizontalAlignment="Center" Width="400"
+              VerticalAlignment="Stretch" 
+              RowDefinitions="Auto, Auto">
+            <StackPanel>
+                <Label HorizontalAlignment="Center" 
+                       Margin="10" FontSize="16" FontWeight="Bold">Settings</Label>
+                <TextBlock Text="{Binding Status}" HorizontalAlignment="Center"/>
+                <StackPanel Margin="5">
+                    <Label>Cookie:</Label>
+                    <TextBox Text="{Binding Cookie}"  
+                             HorizontalAlignment="Stretch" 
+                             MaxWidth="400"
+                             FontFamily="Lucida Console"
+                             VerticalContentAlignment="Center"
+                             FontSize="13"/>
+                </StackPanel>
+                <StackPanel Margin="5">
+                    <Label Content="Code Build Path: "/>
+                    <TextBox Text="{Binding DllFilePath}"  
+                             HorizontalAlignment="Stretch" 
+                             MaxWidth="400"
+                             FontFamily="Lucida Console"
+                             VerticalContentAlignment="Center"
+                             FontSize="13"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20" HorizontalAlignment="Center">
+                <Button Content="Save" 
+                        Margin="5" 
+                        IsEnabled="{Binding ButtonsActive }" 
+                        Command="{Binding Save}"/>
+                <Button Content="Cancel" 
+                        Margin="5"  
+                        IsEnabled="{Binding ButtonsActive }" 
+                        Command="{Binding Cancel}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

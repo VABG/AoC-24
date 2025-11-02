@@ -1,5 +1,5 @@
 ﻿using System;
-using AdventOfCode_24;
+using AdventOfCodeUI;
 using Avalonia;
 using Avalonia.ReactiveUI;
 

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AdventOfCodeCore.DataReading;
 using AdventOfCodeCore.Models.Days;
+using AdventOfCodeCore.Models.Settings;
 using AdventOfCodeCore.Models.WebConnection;
 using AdventOfCodeUI.ViewModels.Sections;
 
@@ -9,7 +11,17 @@ namespace AdventOfCodeUI.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-    public List<int> Years { get; }
+    private int[]? _years;
+    
+    public int[]? Years
+    {
+        get => _years;
+        set
+        {
+            _years = value;
+            OnPropertyChanged(nameof(Years));
+        }
+    }
     private int? _selectedYear;
     public int? SelectedYear
     {
@@ -21,9 +33,9 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private List<Day>? _days;
+    private Day[]? _days;
 
-    public List<Day>? Days
+    public Day[]? Days
     {
         get => _days;
         set
@@ -41,7 +53,7 @@ public class MainViewModel : ViewModelBase
         set => ChangeDay(value);
     }
 
-    public List<int>? Parts => _selectedDay?.PartNumbers;
+    public int[]? Parts => _selectedDay?.PartNumbers;
 
     private int? _selectedPart;
 
@@ -57,7 +69,7 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private readonly DaysReader _daysReader;
+    private Dictionary<int, List<Day>> _daysData = [];
 
     private bool _canRun;
 
@@ -90,9 +102,22 @@ public class MainViewModel : ViewModelBase
     public TestDataViewModel TestData { get; }
     public VisualizerViewModel Visualizer { get; }
     public DescriptionViewModel Description { get; }
+    
     private readonly List<DayBaseViewModel> _viewSections;
+    
+    public SettingsViewModel? SettingsVm { get; }
 
-    public CookieViewModel Cookie { get; }
+    private bool _settingsOpen;
+
+    public bool SettingsOpen
+    {
+        get => _settingsOpen;
+        set
+        {
+            _settingsOpen = value;
+            OnPropertyChanged(nameof(SettingsOpen));
+        }
+    }
 
     public MainViewModel()
     {
@@ -105,11 +130,15 @@ public class MainViewModel : ViewModelBase
         _viewSections.Add(Visualizer);
         Description = new DescriptionViewModel();
         _viewSections.Add(Description);
+        SettingsVm =  new SettingsViewModel(this);
+        if (!Settings.HasSettings)
+            SettingsOpen = true;
+    }
 
-        Cookie = new CookieViewModel();
-        
-        _daysReader = new DaysReader();
-        Years = _daysReader.Days.Keys.ToList();
+    public void ReadDays()
+    {
+        _daysData= DaysReader.ReadYearsAndDays(Settings.User.Value.DllPath);
+        Years = _daysData.Keys.ToArray();
         SelectedYear = Years.LastOrDefault();
         ChangeYear();
         SelectedDay = Days?.LastOrDefault();
@@ -129,7 +158,7 @@ public class MainViewModel : ViewModelBase
         if (_selectedDay != null)
         {
             await _selectedDay.Load();
-            if (_selectedDay.PartNumbers.Count == 0)
+            if (_selectedDay.PartNumbers.Length == 0)
             {
                 return;
             }
@@ -137,7 +166,7 @@ public class MainViewModel : ViewModelBase
             OnPropertyChanged(nameof(Parts));
 
             if (Parts != null)
-                _selectedPart = Parts[Parts.Count - 1];
+                _selectedPart = Parts[Parts.Length - 1];
             else
                 _selectedPart = null;
             CanRun = true;
@@ -162,8 +191,8 @@ public class MainViewModel : ViewModelBase
     private void ChangeYear()
     {
         OnPropertyChanged(nameof(SelectedYear));
-        if (SelectedYear != null && _daysReader.Days.TryGetValue(SelectedYear.Value, out var value)) 
-            Days = value;
+        if (SelectedYear != null && _daysData.TryGetValue(SelectedYear.Value, out var value)) 
+            Days = value.ToArray();
         SelectedDay = Days?.LastOrDefault();
     }
 
@@ -181,6 +210,11 @@ public class MainViewModel : ViewModelBase
     {
         if (SelectedDay != null)
             DayInputReader.OpenSite(SelectedDay.Year, SelectedDay.DayNumber);
+    }
+
+    public void OpenSettings()
+    {
+        SettingsOpen = true;
     }
 
     private async Task Run(bool isTest)

@@ -1,4 +1,3 @@
-using AdventOfCode_24;
 using AdventOfCodeCore.Interfaces;
 using AdventOfCodeCore.Models.Visualization;
 using Avalonia;
@@ -16,7 +15,7 @@ internal class PixelRenderer : IPixelRenderer
         WriteableBitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(96, 96), PixelFormat.Bgra8888,
             AlphaFormat.Unpremul);
     }
-
+    
     public void DrawPixel(Pixel pixel)
     {
         DrawPixels([pixel]);

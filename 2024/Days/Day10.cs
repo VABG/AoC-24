@@ -30,8 +30,8 @@ internal class Day10 : Day
             pixels.Add(new Pixel(x, y, new Color((byte)(height * 200), 255, 255, 255)));
         }
 
-        CreateRenderer(_width, _height);
-        Renderer?.DrawPixels(pixels.ToArray());
+        CreatePixelRenderer(_width, _height);
+        PixelRenderer?.DrawPixels(pixels.ToArray());
         Render();
         int total = 0;
         for (int y = 0; y < _height; y++)
@@ -43,7 +43,7 @@ internal class Day10 : Day
             if (IsTest)
                 Log.Log(score.ToString());
             total += score;
-            Renderer?.DrawPixels(pixels.ToArray());
+            PixelRenderer?.DrawPixels(pixels.ToArray());
             Render();
             Reset(ref levels);
         }
@@ -94,7 +94,7 @@ internal class Day10 : Day
         levels[current.X, current.Y].Visited = true;
 
         int currentHeight = levels[current.X, current.Y].Height;
-        Renderer?.DrawPixel(new Pixel(current.X, current.Y, _red));
+        PixelRenderer?.DrawPixel(new Pixel(current.X, current.Y, _red));
         Wait(IsTest ? 0.05 : 0.005);
         Render();
         if (currentHeight == 9)

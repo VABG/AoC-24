@@ -7,55 +7,79 @@
              x:Class="AdventOfCodeUI.Views.MainView"
              x:DataType="viewModels:MainViewModel"
              x:Name="ViewControl">
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <viewModels:MainViewModel />
-  </Design.DataContext>
-  <Grid RowDefinitions="auto,auto,*" 
-        ColumnDefinitions="*,5,*">
-    
-    <!-- Layout -->
-    <GridSplitter Grid.Column="1" Grid.Row="2" Background="#7F000000" VerticalAlignment="Stretch"
-                  ResizeBehavior="PreviousAndNext" Width="3" />
-    <TextBlock Grid.Row="2" Grid.Column="0"></TextBlock>
+    <Design.DataContext>
+        <viewModels:MainViewModel />
+    </Design.DataContext>
+    <Grid>
+        <Grid x:Name="Overlay" 
+              ZIndex="1000" 
+              IsVisible="{Binding SettingsOpen}">
+            <Grid.Background>
+                <SolidColorBrush Color="Black" 
+                                 Opacity=".5" />
+            </Grid.Background>
 
-    <!-- Menu -->
-    <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="auto" />
-        <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
+            <ContentControl Content="{Binding SettingsVm}" />
+        </Grid>
 
-      <StackPanel Orientation="Horizontal" IsEnabled="{Binding CanChangeDay}">
-        <Label Content=" Year" VerticalAlignment="Center" />
-        <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear}" />
-        <Label Content=" Day" VerticalAlignment="Center" />
-        <ComboBox ItemsSource="{Binding Days}" SelectedItem="{Binding SelectedDay}" />
-        <Label Content=" Part" VerticalAlignment="Center" />
-        <ComboBox ItemsSource="{Binding Parts}" SelectedItem="{Binding SelectedPart}" />
+        <Grid RowDefinitions="auto,auto,*"
+              ColumnDefinitions="*,5,*">
 
+            <!-- Layout -->
+            <GridSplitter Grid.Column="1" 
+                          Grid.Row="2" 
+                          Background="#7F000000" 
+                          VerticalAlignment="Stretch"
+                          ResizeBehavior="PreviousAndNext" Width="3" />
+            <TextBlock Grid.Row="2" Grid.Column="0"></TextBlock>
 
-        <Button Content="Run" Command="{Binding Run}" Width="100" IsEnabled="{Binding CanRun}"
-                TextBlock.TextAlignment="Center" />
+            <!-- Menu -->
+            <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="auto,*" Grid.ColumnSpan="3">
 
-        <Button Content="Test" Width="100" Command="{Binding RunTest}" IsEnabled="{Binding CanRunTest}"
-                TextBlock.TextAlignment="Center" />
-        
-        <ContentControl Content="{Binding TestData}"/>
-      </StackPanel>
+                <StackPanel Orientation="Horizontal" 
+                            IsEnabled="{Binding CanChangeDay}">
+                    <Label Content=" Year" 
+                           VerticalAlignment="Center" />
+                    <ComboBox ItemsSource="{Binding Years}" 
+                              SelectedItem="{Binding SelectedYear}" />
+                    <Label Content=" Day" 
+                           VerticalAlignment="Center" />
+                    <ComboBox ItemsSource="{Binding Days}" 
+                              SelectedItem="{Binding SelectedDay}" />
+                    <Label Content=" Part" 
+                           VerticalAlignment="Center" />
+                    <ComboBox ItemsSource="{Binding Parts}"
+                              SelectedItem="{Binding SelectedPart}" />
+                    <Button Content="Run" 
+                            Command="{Binding Run}" 
+                            Width="100" 
+                            IsEnabled="{Binding CanRun}"
+                            TextBlock.TextAlignment="Center" />
+                    <Button Content="Test" 
+                            Width="100" 
+                            Command="{Binding RunTest}" 
+                            IsEnabled="{Binding CanRunTest}"
+                            TextBlock.TextAlignment="Center" />
+                    <ContentControl Content="{Binding TestData}" />
+                </StackPanel>
 
-      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-        <ContentControl Content="{Binding Cookie}"/>
-        <ContentControl Content="{Binding Description}"/>
-        <Button Content="Site" Command="{Binding OpenSite}" />
-      </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+                    <ContentControl Content="{Binding Description}" />
+                    <Button Content="Site" Command="{Binding OpenSite}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Visualization -->
+            <ContentControl 
+                Grid.Row="2" 
+                Grid.Column="2" 
+                Content="{Binding Visualizer}" />
+
+            <!-- Log -->
+            <ContentControl 
+                Grid.Row="2" 
+                Grid.Column="0"
+                Content="{Binding Log}" />
+        </Grid>
     </Grid>
-
-    <!-- Visualization -->
-    <ContentControl Grid.Row="2" Grid.Column="2" Content="{Binding Visualizer}"/>
-
-    <!-- Log -->
-    <ContentControl  Grid.Row="2" Grid.Column="0" Content="{Binding Log}"/>
-  </Grid>
 </UserControl>

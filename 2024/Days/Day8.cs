@@ -13,8 +13,8 @@ internal class Day8 : Day
     protected override string Part1()
     {
         var lvl = new Level(Input, this);
-        CreateRenderer(lvl.Width, lvl.Height);
-        lvl.SetRenderer(Renderer);
+        CreatePixelRenderer(lvl.Width, lvl.Height);
+        lvl.SetRenderer(PixelRenderer);
         lvl.Draw();
         var total = lvl.CalculateResonance();
         return total.ToString();
@@ -24,8 +24,8 @@ internal class Day8 : Day
     protected override string Part2()
     {
         var lvl = new Level(Input, this);
-        CreateRenderer(lvl.Width, lvl.Height);
-        lvl.SetRenderer(Renderer);
+        CreatePixelRenderer(lvl.Width, lvl.Height);
+        lvl.SetRenderer(PixelRenderer);
         lvl.Draw();
         lvl.Part2 = true;
         var total = lvl.CalculateResonance();

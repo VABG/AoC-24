@@ -44,7 +44,7 @@ namespace AdventOfCodeUI.ViewModels.Sections
 
         private void UpdateBitmap()
         {
-            if (Day?.Renderer is PixelRenderer pixelRenderer)
+            if (Day?.PixelRenderer is PixelRenderer pixelRenderer)
                 WriteableBitmap = pixelRenderer.WriteableBitmap;
             OnPropertyChanged(nameof(WriteableBitmap));
         }

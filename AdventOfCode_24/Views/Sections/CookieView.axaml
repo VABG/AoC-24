@@ -17,18 +17,7 @@
     <Button.Flyout>
       <Flyout Placement="Bottom">
         <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled">
-          <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-          </Grid.RowDefinitions>
-          <StackPanel Orientation="Horizontal">
-            <Button Content="Save" Command="{Binding SaveCookie}" />
-            <TextBox Text="{Binding Cookie}"  
-                     HorizontalAlignment="Stretch" 
-                     MaxWidth="400"
-                     FontFamily="Lucida Console"
-                     FontSize="13"/>
-          </StackPanel>
+
         </Grid>
       </Flyout>
     </Button.Flyout>

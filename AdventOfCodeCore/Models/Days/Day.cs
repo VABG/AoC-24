@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using AdventOfCodeCore.DataReading;
 using AdventOfCodeCore.Interfaces;
 using AdventOfCodeCore.Models.Logging;
 using AdventOfCodeCore.Models.Visualization;
@@ -10,13 +11,14 @@ namespace AdventOfCodeCore.Models.Days;
 
 public abstract class Day : IDay, IComparable<IDay>
 {
-    public IPixelRenderer? Renderer { get; private set; }
+    public IPixelRenderer? PixelRenderer { get; private set; }
+    public ITextRenderer? TextRenderer { get; private set; }
     public LogMessages Log { get; } = new();
     public DayData? Data { get; private set; }
     public abstract int Year { get; }
     public abstract int DayNumber { get; }
     protected string[] Input = [];
-    public List<int> PartNumbers => Parts.Keys.ToList();
+    public int[] PartNumbers => Parts.Keys.ToArray();
 
     private readonly BackgroundWorker _worker;
     private int _partToRun;
@@ -85,7 +87,7 @@ public abstract class Day : IDay, IComparable<IDay>
         }
         
         InputToLines(isTest ? Data?.TestInput : Data?.Input);
-        Renderer?.Clear(Colors.Transparent);
+        PixelRenderer?.Clear(Colors.Transparent);
         Log.Clear();
         var start = DateAndTime.Now;
         Log.Log("Starting " + (isTest ? "Test" : "Run") + " for: " + Year + "." + DayNumber + "." + part + "\n" +
@@ -161,8 +163,8 @@ public abstract class Day : IDay, IComparable<IDay>
         if (!string.IsNullOrEmpty(input.Last()))
             return input;
 
-        string[] newInput = new string[input.Length - 1];
-        for (int i = 0; i < input.Length - 1; i++)
+        var newInput = new string[input.Length - 1];
+        for (var i = 0; i < input.Length - 1; i++)
         {
             newInput[i] = input[i];
         }
@@ -170,15 +172,14 @@ public abstract class Day : IDay, IComparable<IDay>
         return newInput;
     }
 
-    protected void CreateRenderer(int width, int height)
+    protected void CreatePixelRenderer(int width, int height)
     {
-        // TODO: Get from a service of some sort in the view implementation
-        //Renderer = new PixelRenderer(width, height);
+        PixelRenderer = RendererReader.GetPixelRenderer(width, height);
     }
 
     public void Render()
     {
-        if (Renderer != null)
+        if (PixelRenderer != null)
             UpdateVisuals();
     }
 
@@ -188,8 +189,7 @@ public abstract class Day : IDay, IComparable<IDay>
             return 1;
 
         var y = Year.CompareTo(other.Year);
-        if (y != 0) return y;
-        return DayNumber.CompareTo(other.DayNumber);
+        return y != 0 ? y : DayNumber.CompareTo(other.DayNumber);
     }
 
     public void SetParts(Dictionary<int, Func<string>> functions)

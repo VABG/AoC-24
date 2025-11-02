@@ -7,6 +7,4 @@ public interface IDay
 {
     int Year { get; }
     int DayNumber { get; }
-    
-    LogMessages Log { get; }
 }

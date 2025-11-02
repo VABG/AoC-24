@@ -81,7 +81,7 @@ public class DayInputReader
 
     private static async Task<string> ReadAoCPage(string page)
     {
-        var cookie = CookieData.ActiveCookie;
+        var cookie = Settings.Settings.User.Value.Cookie;
         if (string.IsNullOrEmpty(cookie))
             throw new Exception("Cookie is missing/empty!");
 

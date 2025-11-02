@@ -12,10 +12,10 @@ public class Day6 : Day
     protected override string Part1()
     {
         var lvl = new Level(Input);
-        CreateRenderer(lvl.Width, lvl.Height);
+        CreatePixelRenderer(lvl.Width, lvl.Height);
 
         Log.Log("Walking...");
-        Renderer?.DrawPixels(lvl.GetPixels().ToArray());
+        PixelRenderer?.DrawPixels(lvl.GetPixels().ToArray());
         while (lvl.GuardInBounds())
         {
             lvl.MoveGuard();
@@ -60,15 +60,15 @@ public class Day6 : Day
             if (lvl.GuardInBounds())
                 visited.Add(new P2(lvl.Guard.XPos, lvl.Guard.YPos));
         }
-        CreateRenderer(lvl.Width, lvl.Height);
+        CreatePixelRenderer(lvl.Width, lvl.Height);
         visited = visited.Distinct().ToList();
         var boxPixels = lvl.GetBoxPixels();
         
         foreach (var p in visited)
         {
             Render();
-            Renderer?.Clear(new Color(128,0,0,0));
-            Renderer?.DrawPixels(boxPixels);
+            PixelRenderer?.Clear(new Color(128,0,0,0));
+            PixelRenderer?.DrawPixels(boxPixels);
             if (LookForLoop(p.X, p.Y, lvl))
                 loops++;
             
@@ -83,12 +83,12 @@ public class Day6 : Day
 
         lvl.Data[x, y].IsBox = true;
         lvl.Data[x, y].Pixel.Color = Colors.White;
-        Renderer?.DrawPixel(lvl.Data[x,y].Pixel);
+        PixelRenderer?.DrawPixel(lvl.Data[x,y].Pixel);
         bool isLoop = false;
         while (lvl.GuardInBounds())
         {
             lvl.MoveGuard();
-            Renderer?.DrawPixel(lvl.NewPixel);
+            PixelRenderer?.DrawPixel(lvl.NewPixel);
             if (lvl.IsLoop)
             {
                 isLoop = true;
@@ -112,7 +112,7 @@ public class Day6 : Day
 
     private void DrawLevel(Level level)
     {
-        Renderer?.DrawPixel(level.NewPixel);
+        PixelRenderer?.DrawPixel(level.NewPixel);
         Render();
     }
 
