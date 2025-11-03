@@ -61,6 +61,10 @@
                             IsEnabled="{Binding CanRunTest}"
                             TextBlock.TextAlignment="Center" />
                     <ContentControl Content="{Binding TestData}" />
+                    <Button Content="Refresh"
+                            Width="100"
+                            Command="{Binding Refresh}"
+                            TextBlock.TextAlignment="Center"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">

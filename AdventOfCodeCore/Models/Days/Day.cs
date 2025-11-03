@@ -57,7 +57,7 @@ public abstract class Day : IDay, IComparable<IDay>
 
         try
         {
-            Data = await DayInputReader.ReadDayData(this);
+            Data = await SiteDataReader.ReadDayData(this);
         }
         catch (Exception ex)
         {
@@ -205,7 +205,7 @@ public abstract class Day : IDay, IComparable<IDay>
     public void WriteData()
     {
         if (Data != null)
-            DayInputReader.WriteXml(Data, Year, DayNumber);
+            SiteDataReader.WriteXml(Data, Year, DayNumber);
     }
 
     public void Wait(double durationSeconds)

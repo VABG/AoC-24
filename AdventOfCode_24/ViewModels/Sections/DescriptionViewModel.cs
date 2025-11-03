@@ -29,7 +29,7 @@ public class DescriptionViewModel : DayBaseViewModel
         if (Day == null)
             return;
 
-        var d = await DayInputReader.ReadDayDescription(Day);
+        var d = await SiteDataReader.ReadDayDescription(Day);
         Description = d;
         if (d == null || string.IsNullOrEmpty(d))
             return;
@@ -41,7 +41,6 @@ public class DescriptionViewModel : DayBaseViewModel
     {
         if (_descriptions.Count == 0)
             ReadAllDays();
-
 
         if (Day == null)
         {
@@ -68,10 +67,9 @@ public class DescriptionViewModel : DayBaseViewModel
 
     private void WriteCurrentDay()
     {
-        DirectoryInfo di = new DirectoryInfo(Path);
+        var di = new DirectoryInfo(Path);
         if (!di.Exists)
             di.Create();
-
 
         File.WriteAllText(Path + DayToString() + ".txt", Description);
     }

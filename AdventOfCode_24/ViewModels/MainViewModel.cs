@@ -137,7 +137,35 @@ public class MainViewModel : ViewModelBase
             ReadDays();
     }
 
-    public void ReadDays()
+    public void Refresh()
+    {
+        var year = SelectedYear;
+        var day = SelectedDay;
+        var part = SelectedPart;
+        
+        _daysData= DaysReader.ReadYearsAndDays(Settings.User.Value.DllPath);
+
+        if (year.HasValue && Years != null && Years.Any(y => y == year.Value))
+            SelectedYear = year;
+        else
+        {
+            SelectedYear = Years?.LastOrDefault();
+            SelectedDay = Days?.LastOrDefault();
+        }
+        ChangeYear();
+        if (Days != null && Days.Any(y => y == day))
+            SelectedDay = day;
+        else
+            SelectedDay = Days?.LastOrDefault();
+        
+        if (part != null && SelectedDay != null && SelectedPart != null && SelectedDay.PartNumbers.Any( p => p == part))
+            SelectedPart = part;
+        
+        OnPropertyChanged(nameof(SelectedDay));
+        OnPropertyChanged(nameof(CanRunTest));
+    }
+    
+    private void ReadDays()
     {
         _daysData= DaysReader.ReadYearsAndDays(Settings.User.Value.DllPath);
         Years = _daysData.Keys.ToArray();
@@ -211,7 +239,7 @@ public class MainViewModel : ViewModelBase
     public void OpenSite()
     {
         if (SelectedDay != null)
-            DayInputReader.OpenSite(SelectedDay.Year, SelectedDay.DayNumber);
+            SiteDataReader.OpenSite(SelectedDay.Year, SelectedDay.DayNumber);
     }
 
     public void OpenSettings()

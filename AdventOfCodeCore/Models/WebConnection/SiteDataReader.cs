@@ -6,12 +6,12 @@ using HtmlAgilityPack;
 
 namespace AdventOfCodeCore.Models.WebConnection;
 
-public class DayInputReader
+public static class SiteDataReader
 {
     private const string FilePath = @"C:/AoC/";
     private const string AoCSitePath = @"https://adventofcode.com";
 
-    public static async Task<DayData> ReadDayData(IDay day)
+    public static async Task<DayData> ReadDayData(Day day)
     {
         var path = FilePath + day.Year + "_" + day.DayNumber + ".xml";
         if (!Directory.Exists(FilePath))
@@ -25,13 +25,14 @@ public class DayInputReader
         return data;
     }
 
-    public static async Task<string?> ReadDayDescription(IDay day)
+    public static async Task<string?> ReadDayDescription(Day day)
     {
         try
         {
+            // TODO: Add error logging
             var page = await ReadAoCPage($"{day.Year}/day/{day.DayNumber}");
 
-            HtmlDocument doc = new HtmlDocument();
+            var doc = new HtmlDocument();
             doc.LoadHtml(page);
 
             var descr = doc.DocumentNode.SelectNodes("//html/body/main/article");
@@ -59,14 +60,14 @@ public class DayInputReader
 
     private static void WriteXml(DayData data, string path)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(DayData));
+        var serializer = new XmlSerializer(typeof(DayData));
         using TextWriter textWriter = new StreamWriter(path);
         serializer.Serialize(textWriter, data);
     }
 
     private static DayData ReadXml(string path)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(DayData));
+        var serializer = new XmlSerializer(typeof(DayData));
         using TextReader textReader = new StreamReader(path);
         var data = serializer.Deserialize(textReader);
         if (data is not DayData dayData)
