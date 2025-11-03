@@ -95,15 +95,17 @@ public class DayInputReader
         cookies.Add(uri, new Cookie("session", cookie));
 
         var response = await client.GetAsync(page);
+        if (response.StatusCode != HttpStatusCode.OK)
+            return "Issue reading from site, please check your cookie or internet connection";
+        
         var stream = await response.Content.ReadAsStreamAsync();
-
         var sr = new StreamReader(stream);
         return await sr.ReadToEndAsync();
     }
 
     public static void OpenSite(int year, int day)
     {
-        var site = AoCSitePath + year + "/day/" + day;
+        var site = AoCSitePath + "/" + year + "/day/" + day;
         Process.Start(new ProcessStartInfo(site) { UseShellExecute = true });
     }
 }

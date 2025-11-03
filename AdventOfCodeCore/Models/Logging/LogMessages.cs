@@ -11,17 +11,17 @@ public class LogMessages : ILogMessages
 
     public void Log(string message)
     {
-        Write(message, new Color(255, 128,128,128));
+        Write(message, new Color(128, 128,128,255));
     }
         
     public void Error(string message)
     {
-        Write(message, new Color(190, 255,0,0));
+        Write(message, new Color(255, 0,0,190));
     }
 
     public void Success(string message)
     {
-        Write(message, new Color(190, 160,255,0));
+        Write(message, new Color(160, 255,0,190));
     }
 
     public void Write(string message, Color color)

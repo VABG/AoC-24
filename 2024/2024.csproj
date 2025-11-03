@@ -6,7 +6,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    <Target Name="CopyDllToAoCFolder" AfterTargets="Build">
+        <ItemGroup>
+            <BuiltDll Include="$(TargetDir)2024.dll"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(BuiltDll)" DestinationFolder="C:\AoC\Build"/>
+    </Target>
     <ItemGroup>
       <ProjectReference Include="..\AdventOfCodeCore\AdventOfCodeCore.csproj" />
     </ItemGroup>

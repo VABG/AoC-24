@@ -6,7 +6,7 @@ public readonly struct Color(byte r, byte g, byte b, byte a) : IEquatable<Color>
 
     public uint ToUInt32()
     {
-        return ((uint)A << 24) | ((uint)R << 16) | ((uint)G << 8) | (uint)B;
+        return ((uint)A << 24) | ((uint)R << 16) | ((uint)G << 8) | B;
     }
 
     public bool Equals(Color other)

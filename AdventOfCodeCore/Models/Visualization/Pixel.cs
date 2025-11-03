@@ -11,10 +11,10 @@
             var a1 = AlphaToMult(Color.A);
             var a2 = AlphaToMult(other.A);
             return new Color(
-                Interpolate(Color.A, other.A, interpolation),
                 Interpolate(Color.R * a1, other.R * a2, interpolation),
                 Interpolate(Color.G * a1, other.G * a2, interpolation),
-                Interpolate(Color.B * a1, other.B * a2, interpolation));
+                Interpolate(Color.B * a1, other.B * a2, interpolation),
+                Interpolate(Color.A, other.A, interpolation));
         }
 
         private float AlphaToMult(byte alpha)

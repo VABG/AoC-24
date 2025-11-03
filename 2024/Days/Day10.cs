@@ -11,7 +11,7 @@ internal class Day10 : Day
 
     private int _width;
     private int _height;
-    private readonly Color _red = new Color(255, 128,0,0);
+    private readonly Color _red = new Color(128, 0,0,255);
 
     protected override string Part1()
     {
@@ -27,7 +27,7 @@ internal class Day10 : Day
             height *= .1f;
             height *= height;
 
-            pixels.Add(new Pixel(x, y, new Color((byte)(height * 200), 255, 255, 255)));
+            pixels.Add(new Pixel(x, y, new Color(255, 255, 255, (byte)(height * 200))));
         }
 
         CreatePixelRenderer(_width, _height);
@@ -50,12 +50,7 @@ internal class Day10 : Day
 
         return total.ToString();
     }
-
-    protected override string Part2()
-    {
-        return "";
-    }
-
+    
     private void Reset(ref Level[,] level)
     {
         for (int y = 0; y < _height; y++)
