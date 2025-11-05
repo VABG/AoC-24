@@ -140,7 +140,7 @@ public class MainViewModel : ViewModelBase
     public void Refresh()
     {
         var year = SelectedYear;
-        var day = SelectedDay;
+        var day = SelectedDay?.DayNumber;
         var part = SelectedPart;
         
         _daysData= DaysReader.ReadYearsAndDays(Settings.User.Value.DllPath);
@@ -152,9 +152,12 @@ public class MainViewModel : ViewModelBase
             SelectedYear = Years?.LastOrDefault();
             SelectedDay = Days?.LastOrDefault();
         }
-        ChangeYear();
-        if (Days != null && Days.Any(y => y == day))
-            SelectedDay = day;
+
+        if (Days != null)
+        {
+            var newDay = Days.FirstOrDefault(y => y.DayNumber == day);
+            SelectedDay = newDay ??  Days?.LastOrDefault();
+        }
         else
             SelectedDay = Days?.LastOrDefault();
         

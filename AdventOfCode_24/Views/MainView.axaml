@@ -10,12 +10,28 @@
     <Design.DataContext>
         <viewModels:MainViewModel />
     </Design.DataContext>
+    <UserControl.Styles>
+        <Style Selector="Button">
+            <Setter Property="MaxHeight" Value="25" />
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="MinWidth" Value="50"/>
+            <Setter Property="ClipToBounds" Value="False" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="MaxHeight" Value="25" />
+            <Setter Property="MinHeight" Value="15" />
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Styles>
     <Grid>
-        <Grid x:Name="Overlay" 
-              ZIndex="1000" 
+        <Grid x:Name="Overlay"
+              ZIndex="1000"
               IsVisible="{Binding SettingsOpen}">
             <Grid.Background>
-                <SolidColorBrush Color="Black" 
+                <SolidColorBrush Color="Black"
                                  Opacity=".5" />
             </Grid.Background>
 
@@ -26,9 +42,9 @@
               ColumnDefinitions="*,5,*">
 
             <!-- Layout -->
-            <GridSplitter Grid.Column="1" 
-                          Grid.Row="2" 
-                          Background="#7F000000" 
+            <GridSplitter Grid.Column="1"
+                          Grid.Row="2"
+                          Background="#7F000000"
                           VerticalAlignment="Stretch"
                           ResizeBehavior="PreviousAndNext" Width="3" />
             <TextBlock Grid.Row="2" Grid.Column="0"></TextBlock>
@@ -36,56 +52,52 @@
             <!-- Menu -->
             <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="auto,*" Grid.ColumnSpan="3">
 
-                <StackPanel Orientation="Horizontal" 
+                <StackPanel Orientation="Horizontal"
                             IsEnabled="{Binding CanChangeDay}">
-                    <Label Content=" Year" 
+                    <Label Content=" Year"
                            VerticalAlignment="Center" />
-                    <ComboBox ItemsSource="{Binding Years}" 
+                    <ComboBox ItemsSource="{Binding Years}"
                               SelectedItem="{Binding SelectedYear}" />
-                    <Label Content=" Day" 
+                    <Label Content=" Day"
                            VerticalAlignment="Center" />
-                    <ComboBox ItemsSource="{Binding Days}" 
+                    <ComboBox ItemsSource="{Binding Days}"
                               SelectedItem="{Binding SelectedDay}" />
-                    <Label Content=" Part" 
+                    <Label Content=" Part"
                            VerticalAlignment="Center" />
                     <ComboBox ItemsSource="{Binding Parts}"
                               SelectedItem="{Binding SelectedPart}" />
-                    <Button Content="Run" 
-                            Command="{Binding Run}" 
-                            Width="100" 
+                    <Button Content="Run"
+                            Command="{Binding Run}"
                             IsEnabled="{Binding CanRun}"
                             TextBlock.TextAlignment="Center" />
-                    <Button Content="Test" 
-                            Width="100" 
-                            Command="{Binding RunTest}" 
+                    <Button Content="Test"
+                            Command="{Binding RunTest}"
                             IsEnabled="{Binding CanRunTest}"
                             TextBlock.TextAlignment="Center" />
                     <ContentControl Content="{Binding TestData}" />
                     <Button Content="Refresh"
-                            Width="100"
                             Command="{Binding Refresh}"
-                            TextBlock.TextAlignment="Center"/>
+                            TextBlock.TextAlignment="Center" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
                     <ContentControl Content="{Binding Description}" />
                     <Button Content="Site" Command="{Binding OpenSite}" />
-                    <Button Content="Settings" 
-                            Width="100" 
-                            Command="{Binding OpenSettings}" 
+                    <Button Content="Settings"
+                            Command="{Binding OpenSettings}"
                             TextBlock.TextAlignment="Center" />
                 </StackPanel>
             </Grid>
 
             <!-- Visualization -->
-            <ContentControl 
-                Grid.Row="2" 
-                Grid.Column="2" 
+            <ContentControl
+                Grid.Row="2"
+                Grid.Column="2"
                 Content="{Binding Visualizer}" />
 
             <!-- Log -->
-            <ContentControl 
-                Grid.Row="2" 
+            <ContentControl
+                Grid.Row="2"
                 Grid.Column="0"
                 Content="{Binding Log}" />
         </Grid>
