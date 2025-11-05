@@ -34,7 +34,7 @@ float snow(float2 uv, float size, float2 speed)
     float id = hashOld12(id2d);
     
   	uv = float2(fract(uv.x*repeats.x), fract(uv.y*repeats.y));
-    uv += wobbleOffset(id, time, 0.33);
+    uv += wobbleOffset(id, time, 0.45);
     return flake(uv) * (id+.25);
 }
 

@@ -15,7 +15,9 @@
                 <TextBlock Text="{Binding Status}" HorizontalAlignment="Center"/>
                 <StackPanel Margin="5">
                     <Label>Cookie:</Label>
-                    <TextBox Text="{Binding Cookie}"  
+                    <TextBox Text="{Binding Cookie}"
+                             PasswordChar="⁂"
+                             Foreground="GreenYellow"
                              HorizontalAlignment="Stretch" 
                              MaxWidth="400"
                              FontFamily="Lucida Console"
