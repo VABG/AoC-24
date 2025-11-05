@@ -77,10 +77,11 @@ namespace AdventOfCodeCore.DataReading
                 var methodName = method.Name;
                 if (!methodName.StartsWith("Part") || method.ReturnType != typeof(string))
                     continue;
-
+                if (method.Attributes.HasFlag(MethodAttributes.NewSlot))
+                    continue;
                 var nrString = methodName.Substring(4, methodName.Length - 4);
                 if (!int.TryParse(nrString, out var nr))
-                    return;
+                    continue;
 
                 var result = Expression.Lambda<Func<string>>(
                     Expression.Call(Expression.Constant(day), method)).Compile();
