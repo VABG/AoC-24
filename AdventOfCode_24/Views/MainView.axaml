@@ -38,8 +38,12 @@
             <ContentControl Content="{Binding SettingsVm}" />
         </Grid>
 
-        <Grid RowDefinitions="auto,auto,*"
-              ColumnDefinitions="*,5,*">
+        <Grid RowDefinitions="auto,auto,*">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="10"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*" MinWidth="10"/>
+            </Grid.ColumnDefinitions>
 
             <!-- Layout -->
             <GridSplitter Grid.Column="1"
