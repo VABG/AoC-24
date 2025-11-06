@@ -16,7 +16,7 @@
                 <StackPanel Margin="5">
                     <Label>Cookie:</Label>
                     <TextBox Text="{Binding Cookie}"
-                             PasswordChar="⁂"
+                             PasswordChar="❄"
                              Foreground="GreenYellow"
                              HorizontalAlignment="Stretch" 
                              MaxWidth="400"

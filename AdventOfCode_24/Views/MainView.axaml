@@ -13,9 +13,12 @@
     <UserControl.Styles>
         <Style Selector="Button">
             <Setter Property="MaxHeight" Value="25" />
+            <Setter Property="Height" Value="25" />
+            <Setter Property="MinHeight" Value="20" />
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Margin" Value="2"/>
-            <Setter Property="MinWidth" Value="50"/>
+            <Setter Property="Padding" Value="5,0"/>
+            <Setter Property="MinWidth" Value="35"/>
             <Setter Property="ClipToBounds" Value="False" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -72,21 +75,26 @@
                            VerticalAlignment="Center" />
                     <ComboBox ItemsSource="{Binding Parts}"
                               SelectedItem="{Binding SelectedPart}" />
-                    <Button Content="Run"
+                    <Button Content="▶"
                             Command="{Binding Run}"
                             IsEnabled="{Binding CanRun}"/>
-                    <Button Content="Test"
+                    <Button Content="🧪"
                             Command="{Binding RunTest}"
                             IsEnabled="{Binding CanRunTest}"/>
                     <ContentControl Content="{Binding TestData}" />
-                    <Button Content="Refresh"
-                            Command="{Binding Refresh}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+                    <Button Content="🗘"
+                            FontSize="16"
+                            Command="{Binding Refresh}" 
+                            VerticalContentAlignment="Center"/>
                     <ContentControl Content="{Binding Description}" />
-                    <Button Content="Site" Command="{Binding OpenSite}" />
-                    <Button Content="Settings"
+                    <Button Content="🌐" 
+                            FontSize="16"
+                            Command="{Binding OpenSite}" />
+                    <Button Content="⚙"
+                            FontSize="16"
                             Command="{Binding OpenSettings}"/>
                 </StackPanel>
             </Grid>
