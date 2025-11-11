@@ -76,9 +76,11 @@
                     <ComboBox ItemsSource="{Binding Parts}"
                               SelectedItem="{Binding SelectedPart}" />
                     <Button Content="▶"
+                            ToolTip.Tip="Run"
                             Command="{Binding Run}"
                             IsEnabled="{Binding CanRun}"/>
                     <Button Content="🧪"
+                            ToolTip.Tip="Run Test"
                             Command="{Binding RunTest}"
                             IsEnabled="{Binding CanRunTest}"/>
                     <ContentControl Content="{Binding TestData}" />
@@ -86,14 +88,17 @@
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
                     <Button Content="🗘"
+                            ToolTip.Tip="Refresh"
                             FontSize="16"
                             Command="{Binding Refresh}" 
                             VerticalContentAlignment="Center"/>
                     <ContentControl Content="{Binding Description}" />
                     <Button Content="🌐" 
+                            ToolTip.Tip="Go to Site Day"
                             FontSize="16"
                             Command="{Binding OpenSite}" />
                     <Button Content="⚙"
+                            ToolTip.Tip="Settings"
                             FontSize="16"
                             Command="{Binding OpenSettings}"/>
                 </StackPanel>

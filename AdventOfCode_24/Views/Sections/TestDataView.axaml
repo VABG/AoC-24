@@ -10,11 +10,12 @@
             <Setter Property="FontFamily" Value="Lucida Console" />
         </Style>
     </UserControl.Styles>
-    <Button Content="🗠"
+    <Button Content="📊"
             ToolTip.Tip="Test Data"
-            FontSize="22"
-            VerticalContentAlignment="Center"
+            HorizontalContentAlignment="Center"
+            FontSize="16"
             Padding="0"
+            Height="25"
             IsEnabled="{Binding CanRun}"
             Background="#252525">
         <Button.Styles>
