@@ -88,7 +88,7 @@ public class SettingsViewModel : ViewModelBase
         if (string.IsNullOrEmpty(DllFilePath))
         {
             success = false;
-            var str = !string.IsNullOrEmpty(Status) ? "\n" : "";
+            var str = !string.IsNullOrEmpty(newStatus) ? "\n" : "";
             newStatus +=  str + "Dll file not set";
         }
         else
@@ -96,7 +96,7 @@ public class SettingsViewModel : ViewModelBase
             var dir = new DirectoryInfo(DllFilePath);
             if (!dir.Exists)
             {
-                var str = !string.IsNullOrEmpty(Status) ? "\n" : "";
+                var str = !string.IsNullOrEmpty(newStatus) ? "\n" : "";
                 newStatus += str + "Target folder is invalid";
                 success = false;
             }

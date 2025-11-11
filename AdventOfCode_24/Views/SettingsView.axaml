@@ -10,9 +10,9 @@
               VerticalAlignment="Stretch" 
               RowDefinitions="Auto, Auto">
             <StackPanel>
-                <Label HorizontalAlignment="Center" 
+                <Label HorizontalAlignment="Center"
                        Margin="10" FontSize="16" FontWeight="Bold">Settings</Label>
-                <TextBlock Text="{Binding Status}" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Status}" HorizontalAlignment="Center" TextAlignment="Center"/>
                 <StackPanel Margin="5">
                     <Label>Cookie:</Label>
                     <TextBox Text="{Binding Cookie}"
