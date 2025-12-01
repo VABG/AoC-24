@@ -1,6 +1,6 @@
 using AdventOfCodeCore.Models.Days;
 
-namespace _2024.Days;
+namespace Problems._2024;
 
 public class Day2 : Day
 {

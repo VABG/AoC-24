@@ -1,11 +1,14 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.Loader;
 using AdventOfCodeCore.Models.Days;
 
 namespace AdventOfCodeCore.DataReading
 {
     public static class DaysReader
     {
+
+        private static AssemblyLoadContext? _assemblyLoadContext;
         public static Dictionary<int, List<Day>> ReadYearsAndDays(string? dllFolderPath)
         {
             if (string.IsNullOrWhiteSpace(dllFolderPath))
@@ -57,7 +60,12 @@ namespace AdventOfCodeCore.DataReading
         {
             try
             {
-                return Assembly.LoadFrom(dllFilePath);
+                _assemblyLoadContext?.Unload(); 
+                _assemblyLoadContext ??= new AssemblyLoadContext("AssemblyLoadContext", true);
+                var file = File.ReadAllBytes(dllFilePath);
+                using var stream = new MemoryStream(file);
+
+                return _assemblyLoadContext.LoadFromStream(stream);
             }
             catch
             {

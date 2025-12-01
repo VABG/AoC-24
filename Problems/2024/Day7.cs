@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using AdventOfCodeCore.Models.Days;
 
-namespace _2024.Days;
+namespace Problems._2024;
 
 internal class Day7 : Day
 {

@@ -2,7 +2,7 @@
 using AdventOfCodeCore.Models.Days;
 using AdventOfCodeCore.Models.Visualization;
 
-namespace _2024.Days;
+namespace Problems._2024;
 
 internal class Day8 : Day
 {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AdventOfCodeCore.DataReading;
@@ -171,7 +172,9 @@ public class MainViewModel : ViewModelBase
     private void ReadDays()
     {
         _daysData= DaysReader.ReadYearsAndDays(Settings.User.Value.DllPath);
-        Years = _daysData.Keys.ToArray();
+        var years =_daysData.Keys.ToArray();
+        years.Sort();
+        Years = years;
         SelectedYear = Years.LastOrDefault();
         ChangeYear();
         SelectedDay = Days?.LastOrDefault();

@@ -2,13 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <RootNamespace>_2024</RootNamespace>
+        <RootNamespace>Problems</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <Target Name="CopyDllToAoCFolder" AfterTargets="Build">
         <ItemGroup>
-            <BuiltDll Include="$(TargetDir)2024.dll"/>
+            <BuiltDll Include="$(TargetDir)Problems.dll"/>
         </ItemGroup>
         <Copy SourceFiles="@(BuiltDll)" DestinationFolder="C:\AoC\Build"/>
     </Target>
