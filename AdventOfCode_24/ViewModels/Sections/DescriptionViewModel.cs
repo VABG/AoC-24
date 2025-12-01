@@ -30,10 +30,13 @@ public class DescriptionViewModel : DayBaseViewModel
             return;
 
         var d = await SiteDataReader.ReadDayDescription(Day);
-        Description = d;
-        if (d == null || string.IsNullOrEmpty(d))
-            return;
 
+        Description = d.Item1;
+        
+        if (!d.Item2)
+            return;
+        
+        Description = d.Item1;
         WriteCurrentDay();
     }
     

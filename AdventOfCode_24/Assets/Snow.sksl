@@ -1,5 +1,6 @@
 ﻿uniform float2 iResolution;
 uniform float iTime;
+uniform float2 iPosition;
 
 float hashOld12(float2 p)
 {
@@ -43,6 +44,8 @@ float4 main(float2 fragCoord)
     float2 uv = fragCoord/512;
     uv.x *= iResolution.x/512;
     uv.y *= iResolution.y/512;
+    uv.x += iPosition.x;
+    uv.y += iPosition.y;
 
     uv.x += sin(uv.y*.5 + iTime*.25) * 0.05;
     float s = snow(uv, 20, float2(.015, .03)) * .2;

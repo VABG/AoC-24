@@ -57,7 +57,10 @@ public abstract class Day : IDay, IComparable<IDay>
 
         try
         {
-            Data = await SiteDataReader.ReadDayData(this);
+            var fetched = await SiteDataReader.ReadDayData(this);
+            if (!fetched.Item2)
+                Log.Log("Failed to get data from Advent Of Code for: " + Year + " - " + DayNumber);
+            else Data = fetched.Item1;
         }
         catch (Exception ex)
         {

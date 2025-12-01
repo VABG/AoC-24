@@ -11,29 +11,34 @@ public static class SiteDataReader
     private const string FilePath = @"C:/AoC/";
     private const string AoCSitePath = @"https://adventofcode.com";
 
-    public static async Task<DayData> ReadDayData(Day day)
+    public static async Task<(DayData?, bool)> ReadDayData(Day day)
     {
         var path = FilePath + day.Year + "_" + day.DayNumber + ".xml";
         if (!Directory.Exists(FilePath))
             Directory.CreateDirectory(FilePath);
         if (File.Exists(path))
-            return ReadXml(path);
+            return (ReadXml(path), true);
 
         var lines = await ReadInput(day.Year, day.DayNumber);
-        var data = new DayData(lines);
+        if(!lines.Item2)
+            return (null, false);
+        
+        var data = new DayData(lines.Item1);
         WriteXml(data, path);
-        return data;
+        return (data, true);
     }
 
-    public static async Task<string?> ReadDayDescription(Day day)
+    public static async Task<(string, bool)> ReadDayDescription(Day day)
     {
         try
         {
             // TODO: Add error logging
             var page = await ReadAoCPage($"{day.Year}/day/{day.DayNumber}");
-
+            if (!page.Item2)
+                return page;
+            
             var doc = new HtmlDocument();
-            doc.LoadHtml(page);
+            doc.LoadHtml(page.Item1);
 
             var descr = doc.DocumentNode.SelectNodes("//html/body/main/article");
             var res = string.Empty;
@@ -44,11 +49,11 @@ public static class SiteDataReader
                     res += "\n\n\n";
             }
 
-            return res;
+            return (res, true);
         }
         catch (Exception ex)
         {
-            return ex.Message;
+            return (ex.Message, false);
         }
     }
 
@@ -75,12 +80,12 @@ public static class SiteDataReader
         return dayData;
     }
 
-    private static async Task<string> ReadInput(int year, int day)
+    private static async Task<(string, bool)> ReadInput(int year, int day)
     {
         return await ReadAoCPage($"{year}/day/{day}/input");
     }
 
-    private static async Task<string> ReadAoCPage(string page)
+    private static async Task<(string, bool)> ReadAoCPage(string page)
     {
         var cookie = Settings.Settings.User.Value.Cookie;
         if (string.IsNullOrEmpty(cookie))
@@ -97,11 +102,11 @@ public static class SiteDataReader
 
         var response = await client.GetAsync(page);
         if (response.StatusCode != HttpStatusCode.OK)
-            return "Issue reading from site, please check your cookie or internet connection";
+            return ("Issue reading from site, please check your cookie or internet connection", false);
         
         var stream = await response.Content.ReadAsStreamAsync();
         var sr = new StreamReader(stream);
-        return await sr.ReadToEndAsync();
+        return (await sr.ReadToEndAsync(), true);
     }
 
     public static void OpenSite(int year, int day)

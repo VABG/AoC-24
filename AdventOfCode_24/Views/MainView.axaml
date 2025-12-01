@@ -94,7 +94,7 @@
                             VerticalContentAlignment="Center"/>
                     <ContentControl Content="{Binding Description}" />
                     <Button Content="🌐" 
-                            ToolTip.Tip="Go to Site Day"
+                            ToolTip.Tip="Open Current Day in Browser"
                             FontSize="16"
                             Command="{Binding OpenSite}" />
                     <Button Content="⚙"

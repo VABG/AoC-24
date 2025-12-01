@@ -10,6 +10,7 @@
           ClipToBounds="False"
           Padding="0"
           Height="25"
+          ToolTip.Tip="Puzzle Description"
           VerticalContentAlignment="Center">
     <Button.Styles>
       <Style>
@@ -30,7 +31,10 @@
             <RowDefinition Height="*"/>
           </Grid.RowDefinitions>
 
-          <Button Grid.Row="0" Content="Refresh" Command="{Binding Refresh}"/>
+          <Button Grid.Row="0" 
+                  Content="Refresh" 
+                  ToolTip.Tip="Refresh Description from Site"
+                  Command="{Binding Refresh}"/>
           <TextBox Grid.Row="1" MaxHeight="740"
                    ScrollViewer.VerticalScrollBarVisibility="Auto"
                    ScrollViewer.AllowAutoHide="False"

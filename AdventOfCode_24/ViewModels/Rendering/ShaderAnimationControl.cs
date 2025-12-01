@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Numerics;
+using AdventOfCodeUI.Views;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -13,6 +14,8 @@ namespace AdventOfCodeUI.ViewModels.Rendering
 {
     public class ShaderAnimationControl : UserControl
     {
+        private MainWindow? mainWindow = null;
+        
         public static readonly StyledProperty<Stretch> StretchProperty =
         AvaloniaProperty.Register<ShaderAnimationControl, Stretch>(nameof(Stretch), Stretch.Uniform);
 
@@ -83,6 +86,7 @@ namespace AdventOfCodeUI.ViewModels.Rendering
             HandlerCommand HandlerCommand,
             Uri? ShaderCode = default,
             Size? ShaderSize = default,
+            MainWindow? Window = default,
             Size? Size = default,
             Stretch? Stretch = default,
             StretchDirection? StretchDirection = default);
@@ -145,12 +149,16 @@ namespace AdventOfCodeUI.ViewModels.Rendering
             LayoutUpdated += OnLayoutUpdated;
 
             _customVisual.Size = new Vector2((float)Bounds.Size.Width, (float)Bounds.Size.Height);
-
+            var top = TopLevel.GetTopLevel(this);
+            if (top is MainWindow window && mainWindow == null)
+                mainWindow = window;
+            
             _customVisual.SendHandlerMessage(
                 new ShaderDrawPayload(
                     HandlerCommand.Update,
                     null,
                     GetShaderSize(),
+                    mainWindow,
                     Bounds.Size,
                     Stretch,
                     StretchDirection));
@@ -181,6 +189,7 @@ namespace AdventOfCodeUI.ViewModels.Rendering
                     HandlerCommand.Update,
                     null,
                     GetShaderSize(),
+                    mainWindow,
                     Bounds.Size,
                     Stretch,
                     StretchDirection));
@@ -193,6 +202,7 @@ namespace AdventOfCodeUI.ViewModels.Rendering
                     HandlerCommand.Start,
                     ShaderUri,
                     GetShaderSize(),
+                    mainWindow,
                     Bounds.Size,
                     Stretch,
                     StretchDirection));
@@ -217,6 +227,7 @@ namespace AdventOfCodeUI.ViewModels.Rendering
             private StretchDirection? _stretchDirection;
             private Size? _boundsSize;
             private Size? _shaderSize;
+            private MainWindow? _window;
             private string? _shaderCode;
             private readonly object _sync = new();
             private SKRuntimeEffectUniforms? _uniforms;
@@ -232,7 +243,13 @@ namespace AdventOfCodeUI.ViewModels.Rendering
 
                 switch (msg)
                 {
-                    case { HandlerCommand: HandlerCommand.Start, ShaderCode: { } uri, ShaderSize: { } shaderSize, Size: { } size, Stretch: { } st, StretchDirection: { } sd }:
+                    case { HandlerCommand: HandlerCommand.Start, 
+                        ShaderCode: { } uri, 
+                        ShaderSize: { } shaderSize, 
+                        Window: {} window, 
+                        Size: { } size, 
+                        Stretch: { } st, 
+                        StretchDirection: { } sd }:
                         {
                             using var stream = AssetLoader.Open(uri);
                             using var txt = new StreamReader(stream);
@@ -248,12 +265,17 @@ namespace AdventOfCodeUI.ViewModels.Rendering
                             _shaderSize = shaderSize;
                             _running = true;
                             _boundsSize = size;
+                            _window = window;
                             _stretch = st;
                             _stretchDirection = sd;
                             RegisterForNextAnimationFrameUpdate();
                             break;
                         }
-                    case { HandlerCommand: HandlerCommand.Update, ShaderSize: { } shaderSize, Size: { } size, Stretch: { } st, StretchDirection: { } sd }:
+                    case { HandlerCommand: HandlerCommand.Update, 
+                        ShaderSize: { } shaderSize,
+                        Size: { } size, 
+                        Stretch: { } st, 
+                        StretchDirection: { } sd }:
                         {
                             _shaderSize = shaderSize;
                             _boundsSize = size;
@@ -293,12 +315,14 @@ namespace AdventOfCodeUI.ViewModels.Rendering
 
                 var targetWidth = (float)_boundsSize?.Width!;
                 var targetHeight = (float)_boundsSize?.Height!;
-
+                
+                
                 _uniforms ??= new SKRuntimeEffectUniforms(_effect);
 
                 _uniforms["iTime"] = (float)CompositionNow.TotalSeconds;
                 //_uniforms["iResolution"] = new[] { (float)512, (float)512 };
                 _uniforms["iResolution"] = new[] { targetWidth, targetHeight };
+                _uniforms["iPosition"] = new[] { (float)_window?.Position.X!/512, (float)_window?.Position.Y!/512 };
 
                 using (var paint = new SKPaint())
                 using (var shader = _effect.ToShader(_uniforms))
