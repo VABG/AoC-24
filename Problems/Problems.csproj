@@ -6,14 +6,20 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="AdventOfCodeCore">
+        <HintPath>Dependencies\AdventOfCodeCore.dll</HintPath>
+      </Reference>
+    </ItemGroup>
     <Target Name="CopyDllToAoCFolder" AfterTargets="Build">
         <ItemGroup>
             <BuiltDll Include="$(TargetDir)Problems.dll"/>
+            <BuiltPdb Include="$(TargetDir)Problems.pdb"/>
         </ItemGroup>
         <Copy SourceFiles="@(BuiltDll)" DestinationFolder="C:\AoC\Build"/>
+        <Copy SourceFiles="@(BuiltPdb)" DestinationFolder="C:\AoC\Build"/>
+
     </Target>
-    <ItemGroup>
-      <ProjectReference Include="..\AdventOfCodeCore\AdventOfCodeCore.csproj" />
-    </ItemGroup>
 
 </Project>

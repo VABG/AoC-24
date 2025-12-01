@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode.Desktop", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCodeCore", "..\AdventOfCodeCore\AdventOfCodeCore.csproj", "{19E0C139-7B82-48FC-8EFF-3F8C1189D975}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Problems", "..\Problems\Problems.csproj", "{6EEBAAB4-CAE9-4904-A853-79B9792E1B6A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCodeUI", "AdventOfCodeUI.csproj", "{BDDA9449-33F2-4129-9F9C-13AFC0B8B190}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{19E0C139-7B82-48FC-8EFF-3F8C1189D975}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19E0C139-7B82-48FC-8EFF-3F8C1189D975}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19E0C139-7B82-48FC-8EFF-3F8C1189D975}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6EEBAAB4-CAE9-4904-A853-79B9792E1B6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6EEBAAB4-CAE9-4904-A853-79B9792E1B6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6EEBAAB4-CAE9-4904-A853-79B9792E1B6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6EEBAAB4-CAE9-4904-A853-79B9792E1B6A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BDDA9449-33F2-4129-9F9C-13AFC0B8B190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BDDA9449-33F2-4129-9F9C-13AFC0B8B190}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDDA9449-33F2-4129-9F9C-13AFC0B8B190}.Release|Any CPU.ActiveCfg = Release|Any CPU

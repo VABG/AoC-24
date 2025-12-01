@@ -7,6 +7,7 @@ namespace AdventOfCodeCore.DataReading
 {
     public static class DaysReader
     {
+        private static int _assemblyContectCount = 0;
 
         private static AssemblyLoadContext? _assemblyLoadContext;
         public static Dictionary<int, List<Day>> ReadYearsAndDays(string? dllFolderPath)
@@ -61,13 +62,17 @@ namespace AdventOfCodeCore.DataReading
             try
             {
                 _assemblyLoadContext?.Unload(); 
-                _assemblyLoadContext ??= new AssemblyLoadContext("AssemblyLoadContext", true);
+                GC.Collect();
+                GC.WaitForFullGCComplete();
+                GC.WaitForPendingFinalizers();
+                _assemblyLoadContext = new AssemblyLoadContext("AssemblyLoadContext" + _assemblyContectCount, true);
+                _assemblyContectCount++;
                 var file = File.ReadAllBytes(dllFilePath);
                 using var stream = new MemoryStream(file);
 
                 return _assemblyLoadContext.LoadFromStream(stream);
             }
-            catch
+            catch(Exception ex)
             {
                 return null;
             }
