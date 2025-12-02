@@ -13,7 +13,8 @@ public abstract class Day : IDay, IComparable<IDay>
 {
     public IPixelRenderer? PixelRenderer { get; private set; }
     public ITextRenderer? TextRenderer { get; private set; }
-    public LogMessages Log { get; } = new();
+    public LogMessages Log { get; }
+    private LogSettings _logSettings;
     public DayData? Data { get; private set; }
     public abstract int Year { get; }
     public abstract int DayNumber { get; }
@@ -28,6 +29,7 @@ public abstract class Day : IDay, IComparable<IDay>
     private Dictionary<int, Func<string>> Parts { get; set; } = [];
     public event  Action UpdateVisuals = delegate { };
     public event Action RunComplete =  delegate { };
+    public LogState LogState { get; set; } = LogState.LogAll;
 
     protected virtual string Part1()
     {
@@ -43,6 +45,9 @@ public abstract class Day : IDay, IComparable<IDay>
     {
         _worker = new BackgroundWorker();
         _worker.DoWork += WorkerOnDoWork;
+        _logSettings = new LogSettings();
+        Log = new  LogMessages(_logSettings);
+        
     }
 
     private void WorkerOnDoWork(object? sender, DoWorkEventArgs e)
@@ -101,16 +106,20 @@ public abstract class Day : IDay, IComparable<IDay>
 
         try
         {
+            _logSettings.LogState= LogState;
             result = Parts[part].Invoke();
+            _logSettings.LogState = LogState.LogAll;
         }
         catch (Exception ex)
         {
+            _logSettings.LogState = LogState.LogAll;
             Log.Error(ex.Message);
             if (ex.StackTrace != null)
                 Log.Error(ex.StackTrace);
         }
         finally
         {
+            _logSettings.LogState = LogState.LogAll;
             IsRunning = false;
         }
 

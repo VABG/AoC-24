@@ -6,21 +6,33 @@ namespace AdventOfCodeCore.Models.Logging;
 public class LogMessages : ILogMessages
 {
     public List<LogMessage> Messages { get; } = [];
-
+    private readonly LogSettings _logSettings;
+    
     public event Action<LogMessage> MessageLogged = delegate { };
 
+    public LogMessages(LogSettings logSettings)
+    {
+        _logSettings = logSettings;
+    }
+    
     public void Log(string message)
     {
+        if (_logSettings.LogState != LogState.LogAll)
+            return;
         Write(message, new Color(128, 128,128,255));
     }
         
     public void Error(string message)
     {
+        if (_logSettings.LogState == LogState.LogNone)
+            return;
         Write(message, new Color(255, 0,0,190));
     }
 
     public void Success(string message)
     {
+        if (_logSettings.LogState == LogState.LogNone)            
+            return;
         Write(message, new Color(160, 255,0,190));
     }
 
