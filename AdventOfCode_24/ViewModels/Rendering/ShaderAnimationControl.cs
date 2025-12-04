@@ -232,6 +232,8 @@ namespace AdventOfCodeUI.ViewModels.Rendering
             private readonly object _sync = new();
             private SKRuntimeEffectUniforms? _uniforms;
             private SKRuntimeEffect? _effect;
+            private double _time = 0;
+            private double _lastTime = 0;
             private bool _isDisposed;
 
             public override void OnMessage(object message)
@@ -319,7 +321,17 @@ namespace AdventOfCodeUI.ViewModels.Rendering
                 
                 _uniforms ??= new SKRuntimeEffectUniforms(_effect);
 
-                _uniforms["iTime"] = (float)CompositionNow.TotalSeconds;
+                if (_time > 360)
+                    _time = 0;
+                
+                if(_lastTime != 0)
+                {
+                    _time += CompositionNow.TotalSeconds - _lastTime;
+                }
+
+                _lastTime = CompositionNow.TotalSeconds;
+
+                _uniforms["iTime"] = (float)_time;
                 //_uniforms["iResolution"] = new[] { (float)512, (float)512 };
                 _uniforms["iResolution"] = new[] { targetWidth, targetHeight };
                 _uniforms["iPosition"] = new[] { (float)_window?.Position.X!/512, (float)_window?.Position.Y!/512 };
