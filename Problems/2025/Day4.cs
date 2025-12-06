@@ -101,22 +101,22 @@ public class Day4 : Day
                     continue;
                 
                 int neighbors = CoundNeighbors(x, y, input, width, height);
-                if (neighbors < 4)
-                {
-                    input[y][x] = '.';
-                    marked++;
-                    PixelRenderer?.DrawPixel(new Pixel(x,y, Colors.Purple));
+                if (neighbors >= 4) 
+                    continue;
+                input[y][x] = '.';
+                marked++;
+                PixelRenderer?.DrawPixel(new Pixel(x,y, Colors.Purple));
 
-                    if (IsTest)
-                    {
-                        Render();
-                        Thread.Sleep(50);
-                    }
-                }
+                if (!IsTest) 
+                    continue;
+                
+                Render();
+                Thread.Sleep(50);
             }
         }
+        ClearRemoved(input);
         Render();
-        Thread.Sleep(100);
+        Thread.Sleep(50);
         Log.Log(marked.ToString());
         return marked;
     }
