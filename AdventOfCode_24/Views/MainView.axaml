@@ -47,6 +47,7 @@
                 <ColumnDefinition Width="*" MinWidth="10"/>
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="*" MinWidth="10"/>
+                <ColumnDefinition Width="auto" MinWidth="10"/>
             </Grid.ColumnDefinitions>
 
             <!-- Layout -->
@@ -59,7 +60,7 @@
             <TextBlock Grid.Row="2" Grid.Column="0"></TextBlock>
 
             <!-- Menu -->
-            <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="auto,*" Grid.ColumnSpan="3">
+            <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="auto,*" Grid.ColumnSpan="4">
 
                 <StackPanel Orientation="Horizontal"
                             IsEnabled="{Binding CanChangeDay}">
@@ -83,17 +84,30 @@
                             ToolTip.Tip="Run Test"
                             Command="{Binding RunTest}"
                             IsEnabled="{Binding CanRunTest}"/>
+
                     <ContentControl Content="{Binding TestData}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+                    <Button Content="⏹️"
+                            ToolTip.Tip="Stop"
+                            Foreground="Red"
+                            FontSize="16"
+                            VerticalContentAlignment="Center"
+                            Command="{Binding Stop}"/>
                     <Button Content="🗘"
                             IsEnabled="{Binding CanRun}"
                             ToolTip.Tip="Refresh"
                             FontSize="16"
                             Command="{Binding Refresh}" 
                             VerticalContentAlignment="Center"/>
-                    <ContentControl Content="{Binding Description}" />
+                    <Button Background="#252525"
+                            Content="🖹"
+                            FontSize="18"
+                            ToolTip.Tip="Puzzle Description"
+                            Command="{Binding ToggleDescription}"
+                            VerticalContentAlignment="Center">
+                    </Button>
                     <Button Content="🌐" 
                             ToolTip.Tip="Open Current Day in Browser"
                             FontSize="16"
@@ -118,6 +132,11 @@
                 Grid.Column="0"
                 Margin="5,5,0,5"
                 Content="{Binding Log}" />
+            
+            <ContentControl VerticalAlignment="Stretch" Grid.Row="2" 
+                            Grid.Column="3" 
+                            Content="{Binding Description}" />
+
         </Grid>
     </Grid>
 </UserControl>

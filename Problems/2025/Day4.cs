@@ -85,6 +85,7 @@ public class Day4 : Day
                 break;
             total += removed;
             UpdatePixels(input);
+            CheckStop();
         }
         
         return total.ToString();
@@ -113,6 +114,7 @@ public class Day4 : Day
                 
                 Render();
                 Thread.Sleep(50);
+                CheckStop();
             }
         }
         Render();

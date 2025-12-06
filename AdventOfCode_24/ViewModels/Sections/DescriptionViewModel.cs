@@ -11,6 +11,19 @@ public class DescriptionViewModel : DayBaseViewModel
     private readonly Dictionary<string, string> _descriptions = [];
     private const string Path = @"C:\AoC\DaySites\";
 
+
+    private bool _isVisible;
+
+    public bool IsVisible
+    {
+        get => _isVisible;
+        set
+        {
+            _isVisible = value;
+            OnPropertyChanged(nameof(IsVisible));
+        }
+    }
+
     private string? _description;
     public string? Description
     {
@@ -23,6 +36,8 @@ public class DescriptionViewModel : DayBaseViewModel
             OnPropertyChanged(nameof(Description));
         }
     } 
+    
+    
 
     public async Task Refresh()
     {

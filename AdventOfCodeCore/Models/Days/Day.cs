@@ -27,8 +27,8 @@ public abstract class Day : IDay, IComparable<IDay>
     public bool IsRunning { get; private set; }
 
     private Dictionary<int, Func<string>> Parts { get; set; } = [];
-    public event  Action UpdateVisuals = delegate { };
-    public event Action RunComplete =  delegate { };
+    public event Action UpdateVisuals = delegate { };
+    public event Action RunComplete = delegate { };
     public LogState LogState { get; set; } = LogState.LogAll;
 
     protected virtual string Part1()
@@ -40,14 +40,14 @@ public abstract class Day : IDay, IComparable<IDay>
     {
         return "Not Implemented";
     }
-    
+
     protected Day()
     {
         _worker = new BackgroundWorker();
+        _worker.WorkerSupportsCancellation = true;
         _worker.DoWork += WorkerOnDoWork;
         _logSettings = new LogSettings();
-        Log = new  LogMessages(_logSettings);
-        
+        Log = new LogMessages(_logSettings);
     }
 
     private void WorkerOnDoWork(object? sender, DoWorkEventArgs e)
@@ -86,14 +86,14 @@ public abstract class Day : IDay, IComparable<IDay>
         IsRunning = true;
         var isTest = IsTest;
         var part = _partToRun;
-        
+
         if (Data == null)
         {
             Log.Error("No data! Can not run Day!");
             IsRunning = false;
             return;
         }
-        
+
         InputToLines(isTest ? Data?.TestInput : Data?.Input);
         PixelRenderer?.Clear(Colors.Transparent);
         Log.Clear();
@@ -106,7 +106,7 @@ public abstract class Day : IDay, IComparable<IDay>
 
         try
         {
-            _logSettings.LogState= LogState;
+            _logSettings.LogState = LogState;
             result = Parts[part].Invoke();
             _logSettings.LogState = LogState.LogAll;
         }
@@ -144,11 +144,11 @@ public abstract class Day : IDay, IComparable<IDay>
             Log.Error("Failed: No Result");
             return;
         }
-        
+
         var expected = Data?.GetExpectedForPart(part);
-        if (string.IsNullOrEmpty(expected)) 
+        if (string.IsNullOrEmpty(expected))
             return;
-        
+
         if (result == expected)
             Log.Success("Test Successful!");
         else
@@ -159,6 +159,17 @@ public abstract class Day : IDay, IComparable<IDay>
         Log.Log(expected);
     }
 
+    protected void CheckStop()
+    {
+        if (_worker.CancellationPending)
+            throw new StopException();
+    }
+
+    public void Stop()
+    {
+        _worker.CancelAsync();
+    }
+
     private void InputToLines(string? input)
     {
         if (input == null)
@@ -166,6 +177,7 @@ public abstract class Day : IDay, IComparable<IDay>
             Input = [];
             return;
         }
+
         var splitInput = input.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
         Input = ClearEmptyLineAtEnd(splitInput);
     }
@@ -227,7 +239,6 @@ public abstract class Day : IDay, IComparable<IDay>
 
         while (sw.ElapsedTicks < durationTicks)
         {
-
         }
     }
 }

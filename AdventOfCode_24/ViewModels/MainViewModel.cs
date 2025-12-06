@@ -193,6 +193,11 @@ public class MainViewModel : ViewModelBase
         SelectedDay = Days?.LastOrDefault();
     }
 
+    public void ToggleDescription()
+    {
+        Description.IsVisible = !Description.IsVisible;
+    }
+
     private async void ChangeDay(Day? newDay)
     {
         CanRun = false;
@@ -253,6 +258,11 @@ public class MainViewModel : ViewModelBase
     public async Task RunTest()
     {
         await Run(true);
+    }
+
+    public void Stop()
+    {
+        SelectedDay?.Stop();
     }
 
     public void OpenSite()
