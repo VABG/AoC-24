@@ -32,14 +32,15 @@ public class Day4 : Day
                 if (neighbors < 4)
                 {
                     marked++;
-                    Log.Success("x:" + x + " y:" +y + " "+ neighbors);
+                    if(IsTest)
+                        Log.Success("x:" + x + " y:" +y + " "+ neighbors);
                     PixelRenderer?.DrawPixel(new Pixel(x,y, Colors.IndianRed));
                     Render();
                     if(IsTest)
                         Thread.Sleep(100);
-                    else Thread.Sleep(10);
                 }
             }
+            Thread.Sleep(1);
         }
         
         return marked.ToString();
@@ -47,7 +48,7 @@ public class Day4 : Day
 
     private void UpdatePixels(char[][] input)
     {
-        PixelRenderer!.Clear(Colors.Black);
+        PixelRenderer!.Clear(Colors.Transparent);
         if (PixelRenderer == null)
             return;
         int height = input.Length;
@@ -58,13 +59,13 @@ public class Day4 : Day
             for (int x = 0; x < width; x++)
             {
                 if (input[y][x] == '@')
-                    PixelRenderer.DrawPixel(new Pixel(x,y, Colors.SaddleBrown));
+                    PixelRenderer.DrawPixel(new Pixel(x,y, new Color(150, 0, 0, 200)));
                 if(input[y][x] == 'x')
                     PixelRenderer.DrawPixel(new Pixel(x,y, Colors.Red));
             }
         }
-        Render();
-        Thread.Sleep(100);
+        //Render();
+        //Thread.Sleep(100);
     }
 
     protected override string Part2()
@@ -103,9 +104,9 @@ public class Day4 : Day
                 int neighbors = CoundNeighbors(x, y, input, width, height);
                 if (neighbors >= 4) 
                     continue;
-                input[y][x] = '.';
+                input[y][x] = 'x';
                 marked++;
-                PixelRenderer?.DrawPixel(new Pixel(x,y, Colors.Purple));
+                PixelRenderer?.DrawPixel(new Pixel(x,y, Colors.Orange));
 
                 if (!IsTest) 
                     continue;
@@ -114,8 +115,8 @@ public class Day4 : Day
                 Thread.Sleep(50);
             }
         }
-        ClearRemoved(input);
         Render();
+        ClearRemoved(input);
         Thread.Sleep(50);
         Log.Log(marked.ToString());
         return marked;
